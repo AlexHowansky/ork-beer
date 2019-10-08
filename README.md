@@ -48,18 +48,22 @@ multiple values, they will be output into the same file as separate layers. For
 example:
 
 `beer kml out NY`
+
 Creates `out.kml` with one layer containing all the breweries in New York,
 based on the most recent set.
 
 `beer kml out 20191001 NY`
+
 Creates `out.kml` with one layer containing all the breweries in New York,
 based on the 20191001 set.
 
 `beer kml out NY CT VT`
+
 Creates `out.kml` with three layers, one for each state, bsed on the most
 recent set.
 
 `beer kml Belgium Belgium`
+
 Creates `Belgium.kml` with one layer containing all the breweries in Belgium,
 based on the most recent set.
 
