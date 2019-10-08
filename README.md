@@ -61,7 +61,10 @@ recent set.
 
 `beer kml Belgium Belgium`
 Creates `Belgium.kml` with one layer containing all the breweries in Belgium,
-bsed on the most recent set.
+based on the most recent set.
+
+## kmz
+Use `kmz` as above to create a KMZ file instead of a KML file.
 
 # Maps
 
