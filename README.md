@@ -78,11 +78,11 @@ may simply use my existing maps, which are kept reasonably up-to-date and are
 shared here:
 
 * Northeast: http://bit.ly/beer-northeast
-* South:
-* Midwest:
-* Mountain: 
-* Pacific: 
-* Cananda:
+* South: http://bit.ly/beer-south
+* Midwest: http://bit.ly/beer-midwest
+* Mountain: http://bit.ly/beer-mountain
+* Pacific: http://bit.ly/beer-pacific
+* Cananda: http://bit.ly/beer-canada
 
 Note that since Google Maps has a limit of 2000 points per, the data has been
 split into groups according to the US Census Bureau regions.
