@@ -82,7 +82,7 @@ shared here:
 * Midwest: http://bit.ly/beer-midwest
 * Mountain: http://bit.ly/beer-mountain
 * Pacific: http://bit.ly/beer-pacific
-* Cananda: http://bit.ly/beer-canada
+* Canada: http://bit.ly/beer-canada
 
 Note that since Google Maps has a limit of 2000 points per, the data has been
 split into groups according to the US Census Bureau regions.
