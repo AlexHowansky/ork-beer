@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+require_once realpath(__DIR__ . '/../vendor/autoload.php');
+
+try {
+    (new \Ork\Beer\Command())();
+} catch (\Throwable $e) {
+    echo "ERROR: ", $e->getMessage(), "\n";
+}
