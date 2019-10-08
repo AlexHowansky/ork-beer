@@ -77,7 +77,7 @@ If you just want to see the maps, you do not need to download this package. You
 may simply use my existing maps, which are kept reasonably up-to-date and are
 shared here:
 
-* Northeast:
+* Northeast: http://bit.ly/beer-northeast
 * South:
 * Midwest:
 * Mountain: 
