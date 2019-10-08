@@ -68,7 +68,8 @@ Creates `Belgium.kml` with one layer containing all the breweries in Belgium,
 based on the most recent set.
 
 ## kmz
-Use `kmz` as above to create a KMZ file instead of a KML file.
+Use `kmz` as above to create a KMZ file instead of a KML file. This requires
+PHP's `ext-zip` extension.
 
 # Maps
 
