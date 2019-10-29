@@ -86,3 +86,8 @@ shared here:
 
 Note that since Google Maps has a limit of 2000 points per, the data has been
 split into groups according to the US Census Bureau regions.
+
+# Disclaimer
+
+This is not my data, I am merely drawing maps. There will be errors. Please do
+not report incorrect or missing information as a bug.
