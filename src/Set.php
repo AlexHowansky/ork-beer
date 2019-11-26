@@ -134,6 +134,16 @@ class Set implements \IteratorAggregate, \Countable
         foreach ($csv as $row) {
             foreach ($this->filters as $filter) {
                 switch ($filter['type']) {
+                    case 'in':
+                        if (in_array($row[$filter['field']], $filter['value']) === false) {
+                            continue 3;
+                        }
+                        break;
+                    case '!in':
+                        if (in_array($row[$filter['field']], $filter['value']) === true) {
+                            continue 3;
+                        }
+                        break;
                     case 'match':
                         if ($row[$filter['field']] != $filter['value']) {
                             continue 3;
