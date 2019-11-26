@@ -43,32 +43,26 @@ class Kml extends AbstractCommand
         $store = $this->getStorageObject($output);
         foreach ($args as $layer => $filters) {
             $store->startLayer($layer);
-            printf("    Creating layer: %s\n", $layer);
-            $layerCount = 0;
-            foreach ($filters as $filter) {
-                printf("        Processing filter: %s\n", $filter);
-                $filterCount = 0;
-                foreach (
-                    $set
-                        ->clearFilters()
-                        ->addFilter('!match', 'BreweryType', 'planning')
-                        ->addFilter('match', $layer === $filter ? 'Country' : 'StateProvince', $filter)
-                        ->getSorted('InstituteName')
-                    as $brewery
-                ) {
-                    try {
-                        $store->placemark($brewery);
-                        ++$filterCount;
-                    } catch (\Exception $e) {
-                        printf("            %s\n", $e->getMessage());
-                    }
+            printf("Creating layer: %s\n", $layer);
+            $markerCount = 0;
+            foreach (
+                $set
+                    ->clearFilters()
+                    ->addFilter('!match', 'BreweryType', 'planning')
+                    ->addFilter('in', strlen($filters[0]) === 2 ? 'StateProvince' : 'Country', $filters)
+                    ->getSorted('InstituteName')
+                as $brewery
+            ) {
+                try {
+                    $store->placemark($brewery);
+                    ++$markerCount;
+                } catch (\Exception $e) {
+                    printf("    %s\n", $e->getMessage());
                 }
-                printf("            Added %d placemarks\n", $filterCount);
-                $layerCount += $filterCount;
             }
             $store->endLayer();
-            printf("        Layer contains %d placemarks\n", $layerCount);
-            if ($layerCount > 2000) {
+            printf("    Layer contains %d placemarks\n", $markerCount);
+            if ($markerCount > 2000) {
                 throw new \RuntimeException('Exceeded placemark layer limit.');
             }
         }
