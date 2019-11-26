@@ -44,7 +44,7 @@ class Kml
         'brewpub' => 'F8971B',
         'contract' => 'F4EB37',
         'large' => '7C3592',
-        'micro' => 'DB4436',
+        'micro' => '34E5EB',
         'other' => '000000',
         'planning' => 'E0E0E0',
         'proprietor' => '4186F0',
