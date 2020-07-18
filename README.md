@@ -78,8 +78,10 @@ may simply use my existing maps, which are kept reasonably up-to-date and are
 shared here:
 
 * Northeast: http://bit.ly/beer-northeast
-* South: http://bit.ly/beer-south
-* Midwest: http://bit.ly/beer-midwest
+* South Atlantic: http://bit.ly/beer-south-atlantic
+* South Central: http://bit.ly/beer-south-central
+* Midwest East: http://bit.ly/beer-midwest-east
+* Midwest West: http://bit.ly/beer-midwest-west
 * Mountain: http://bit.ly/beer-mountain
 * Pacific: http://bit.ly/beer-pacific
 * Canada: http://bit.ly/beer-canada

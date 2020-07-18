@@ -1,0 +1,10 @@
+#!/bin/bash
+
+./bin/beer kmz Canada Canada
+./bin/beer kmz Northeast "Mid Atlantic" "New England"
+./bin/beer kmz SouthAtlantic "South Atlantic"
+./bin/beer kmz SouthCentral "East South Central" "West South Central"
+./bin/beer kmz MidwestEast "East North Central"
+./bin/beer kmz MidwestWest "West North Central"
+./bin/beer kmz Mountain Mountain
+./bin/beer kmz Pacific Pacific
