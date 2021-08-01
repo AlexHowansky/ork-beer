@@ -13,13 +13,13 @@
     ],
     "require": {
         "php": ">=7.4.0",
-        "ork/csv": "^1.4.0"
+        "ork/csv": "^1.4.1"
     },
     "suggest": {
         "ext-zip": "Needed to create KMZ files."
     },
     "require-dev": {
-        "phpstan/phpstan": ">=0.12.67 <1.0.0",
+        "phpstan/phpstan": ">=0.12.94 <1.0.0",
         "roave/security-advisories": "dev-master"
     },
     "autoload": {
