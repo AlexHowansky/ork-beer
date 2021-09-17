@@ -4,7 +4,7 @@
  * Ork Beer
  *
  * @package   Ork\Beer
- * @copyright 2019 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2019-2021 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/ork-beer/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/ork-beer
  */
@@ -45,14 +45,12 @@ class Kml extends AbstractCommand
             $store->startLayer($layer);
             printf("Creating layer: %s\n", $layer);
             $markerCount = 0;
-            foreach (
-                $set
-                    ->clearFilters()
-                    ->addFilter('!match', 'BreweryType', 'planning')
-                    ->addFilter('in', strlen($filters[0]) === 2 ? 'StateProvince' : 'Country', $filters)
-                    ->getSorted('InstituteName')
-                as $brewery
-            ) {
+            $breweries = $set
+                ->clearFilters()
+                ->addFilter('!match', 'BreweryType', 'planning')
+                ->addFilter('in', strlen($filters[0]) === 2 ? 'StateProvince' : 'Country', $filters)
+                ->getSorted('InstituteName');
+            foreach ($breweries as $brewery) {
                 try {
                     $store->placemark($brewery);
                     ++$markerCount;

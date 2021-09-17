@@ -1,1 +1,3 @@
+phpstan.neon
+phpcs.xml
 /vendor/

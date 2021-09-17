@@ -4,7 +4,7 @@
  * Ork Beer
  *
  * @package   Ork\Beer
- * @copyright 2019 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2019-2021 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/ork-beer/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/ork-beer
  */
@@ -20,12 +20,13 @@ class File
     /**
      * If we receive fewer than this many records, we'll consider it an error.
      */
-    const THRESHOLD = 10000;
+    protected const THRESHOLD = 10000;
 
     /**
      * The URL for the JSON content.
      */
-    const URL = 'https://www.brewersassociation.org/wp-content/themes/ba2019/json-store/breweries/breweries.json';
+    protected const URL =
+        'https://www.brewersassociation.org/wp-content/themes/ba2019/json-store/breweries/breweries.json';
 
     /**
      * Get the verified file name for a given data set. If no set name is

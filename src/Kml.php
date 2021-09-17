@@ -4,7 +4,7 @@
  * Ork Beer
  *
  * @package   Ork\Beer
- * @copyright 2019 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2019-2021 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/ork-beer/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/ork-beer
  */
@@ -20,27 +20,28 @@ class Kml
     /**
      * Use this type if none is explicitly specified.
      */
-    const DEFAULT_TYPE = 'other';
+    protected const DEFAULT_TYPE = 'other';
 
     /**
      * The icon to use for placemarks.
      */
-    const ICON = '1879-stein-beer_4x.png';
+    protected const ICON = '1879-stein-beer_4x.png';
 
     /**
      * The icon base URL.
      */
-    const ICON_BASE = 'https://mt.google.com/vt/icon/name=icons/onion/SHARED-mymaps-container_4x.png,icons/onion/';
+    protected const ICON_BASE =
+        'https://mt.google.com/vt/icon/name=icons/onion/SHARED-mymaps-container_4x.png,icons/onion/';
 
     /**
      * The icon scale.
      */
-    const ICON_SCALE = '1.0';
+    protected const ICON_SCALE = '1.0';
 
     /**
      * The color to use for each type.
      */
-    const TYPE_COLORS = [
+    protected const TYPE_COLORS = [
         'brewpub' => 'F8971B',
         'contract' => 'F4EB37',
         'large' => '7C3592',
@@ -168,7 +169,8 @@ class Kml
         $this->kml->writeElement('name', $row['InstituteName']);
         $this->kml->writeElement(
             'styleUrl',
-            '#' . (
+            sprintf(
+                '#%s',
                 array_key_exists($row['BreweryType'], self::TYPE_COLORS) === true
                     ? $row['BreweryType']
                     : self::DEFAULT_TYPE

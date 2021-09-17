@@ -4,7 +4,7 @@
  * Ork Beer
  *
  * @package   Ork\Beer
- * @copyright 2019 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2019-2021 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/ork-beer/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/ork-beer
  */
@@ -20,7 +20,7 @@ class Set implements \IteratorAggregate, \Countable
     /**
      * Fields that should be converted from "The Foo" to "Foo, The".
      */
-    const SWAP_THE_FIELDS = ['InstituteName', 'TopParentCoName'];
+    protected const SWAP_THE_FIELDS = ['InstituteName', 'TopParentCoName'];
 
     /**
      * The data file.
@@ -145,11 +145,13 @@ class Set implements \IteratorAggregate, \Countable
                         }
                         break;
                     case 'match':
+                        // @phpcs:ignore Ork.Operators.ComparisonOperatorUsage.NotAllowed
                         if ($row[$filter['field']] != $filter['value']) {
                             continue 3;
                         }
                         break;
                     case '!match':
+                        // @phpcs:ignore Ork.Operators.ComparisonOperatorUsage.NotAllowed
                         if ($row[$filter['field']] == $filter['value']) {
                             continue 3;
                         }

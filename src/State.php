@@ -4,7 +4,7 @@
  * Ork Beer
  *
  * @package   Ork\Beer
- * @copyright 2019 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2019-2021 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/ork-beer/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/ork-beer
  */
@@ -20,7 +20,7 @@ class State
     /**
      * The list of state names.
      */
-    const NAMES = [
+    protected const NAMES = [
         'AL' => 'Alabama',
         'AK' => 'Alaska',
         'AZ' => 'Arizona',
@@ -84,22 +84,24 @@ class State
 
     /**
      * The states composing each region.
+     *
+     * These regions are defined by the US Census Bureau.
      */
-    const REGIONS = [
-        // Northeast
+    protected const REGIONS = [
+        // "Northeast" region.
         'Mid Atlantic' => ['NJ', 'NY', 'PA'],
         'New England' => ['CT', 'MA', 'ME', 'NH', 'RI', 'VT'],
 
-        // South
+        // "South" region.
         'East South Central' => ['AL', 'KY', 'MS', 'TN'],
         'South Atlantic' => ['DC', 'DE', 'FL', 'GA', 'NC', 'SC', 'VA', 'WV'],
         'West South Central' => ['AR', 'LA', 'OK', 'TX'],
 
-        // West
+        // "West" region.
         'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NM', 'NV', 'UT', 'WY'],
         'Pacific' => ['AK', 'CA', 'HI', 'OR', 'WA'],
 
-        // Midwest
+        // "Midwest" region.
         'East North Central' => ['IL', 'IN', 'OH', 'MI', 'WI'],
         'West North Central' => ['IA', 'KS', 'MN', 'MO', 'ND', 'NE', 'SD'],
     ];

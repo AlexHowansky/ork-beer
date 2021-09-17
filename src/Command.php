@@ -4,7 +4,7 @@
  * Ork Beer
  *
  * @package   Ork\Beer
- * @copyright 2019 Alex Howansky (https://github.com/AlexHowansky)
+ * @copyright 2019-2021 Alex Howansky (https://github.com/AlexHowansky)
  * @license   https://github.com/AlexHowansky/ork-beer/blob/master/LICENSE MIT License
  * @link      https://github.com/AlexHowansky/ork-beer
  */
@@ -40,7 +40,7 @@ class Command
         if (class_exists($class) === false) {
             $this->help('Unknown command specified.');
         }
-        (new $class)($_SERVER['argv']);
+        (new $class())($_SERVER['argv']);
     }
 
     /**
