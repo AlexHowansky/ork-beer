@@ -14,7 +14,7 @@
     "require": {
         "php": ">=7.4.0",
         "ork/csv": "^1.4.1",
-        "ork/phpcs": "^2.5"
+        "ork/phpcs": "^2.5.1"
     },
     "suggest": {
         "ext-zip": "Needed to create KMZ files."

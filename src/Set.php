@@ -56,7 +56,7 @@ class Set implements \IteratorAggregate, \Countable
      *
      * @return Set Allow method chaining.
      */
-    public function addFilter(string $type, string $field, $value, bool $invert = false): self
+    public function addFilter(string $type, string $field, mixed $value, bool $invert = false): self
     {
         $this->filters[] = [
             'type' => $type,
