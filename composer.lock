@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c8ef78f0e3c96492ed0dcbcc9cd2e62",
+    "content-hash": "086d29cb77837d09d3014d16a26d8b7c",
     "packages": [
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -78,26 +78,28 @@
         },
         {
             "name": "ork/core",
-            "version": "1.2.1",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AlexHowansky/ork-core.git",
-                "reference": "dfe789e3c152f48482d5e90e7c961d9bd8256d28"
+                "reference": "003deee06627083ad4645a6a57e4c669a9cd3b9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AlexHowansky/ork-core/zipball/dfe789e3c152f48482d5e90e7c961d9bd8256d28",
-                "reference": "dfe789e3c152f48482d5e90e7c961d9bd8256d28",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-core/zipball/003deee06627083ad4645a6a57e4c669a9cd3b9d",
+                "reference": "003deee06627083ad4645a6a57e4c669a9cd3b9d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.3.0"
+                "php": ">=7.4.0"
             },
             "require-dev": {
-                "mikey179/vfsstream": "^1.6.8",
-                "ork/phpcs": "^2.3.0",
-                "phpstan/phpstan": ">=0.12.85 <1.0.0",
-                "phpunit/phpunit": "^9.5.4",
+                "mikey179/vfsstream": "^1.6.10",
+                "ork/phpcs": "^2.6.0",
+                "phpcompatibility/php-compatibility": "^9.3",
+                "phpmetrics/phpmetrics": "^2.7",
+                "phpstan/phpstan": ">=0.12.99 <1.0.0",
+                "phpunit/phpunit": "^9.5.10",
                 "roave/security-advisories": "dev-master"
             },
             "type": "library",
@@ -124,34 +126,35 @@
             ],
             "support": {
                 "issues": "https://github.com/AlexHowansky/ork-core/issues",
-                "source": "https://github.com/AlexHowansky/ork-core/tree/1.2.1"
+                "source": "https://github.com/AlexHowansky/ork-core/tree/1.4.0"
             },
-            "time": "2021-05-07T20:25:22+00:00"
+            "time": "2021-11-02T16:58:56+00:00"
         },
         {
             "name": "ork/csv",
-            "version": "1.4.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AlexHowansky/ork-csv.git",
-                "reference": "1dac4815eb6db7a95abb961fc82bd57fb679a04a"
+                "reference": "62d9f554c609b99d172b24f105ae4d7918a38e3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AlexHowansky/ork-csv/zipball/1dac4815eb6db7a95abb961fc82bd57fb679a04a",
-                "reference": "1dac4815eb6db7a95abb961fc82bd57fb679a04a",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-csv/zipball/62d9f554c609b99d172b24f105ae4d7918a38e3a",
+                "reference": "62d9f554c609b99d172b24f105ae4d7918a38e3a",
                 "shasum": ""
             },
             "require": {
-                "ork/core": "^1.2.0",
-                "php": ">=7.3.0"
+                "ork/core": "^1.4.0",
+                "php": ">=7.4.0"
             },
             "require-dev": {
-                "mikey179/vfsstream": "^1.6.8",
-                "ork/phpcs": "^2.3.0",
+                "mikey179/vfsstream": "^1.6.10",
+                "ork/phpcs": "^2.6.0",
+                "phpcompatibility/php-compatibility": "^9.3",
                 "phpmetrics/phpmetrics": "^2.7.4",
-                "phpstan/phpstan": ">=0.12.85 <1.0.0",
-                "phpunit/phpunit": "^9.5.4",
+                "phpstan/phpstan": ">=0.12.99 <1.0.0",
+                "phpunit/phpunit": "^9.5.10",
                 "roave/security-advisories": "dev-master"
             },
             "type": "library",
@@ -179,22 +182,22 @@
             ],
             "support": {
                 "issues": "https://github.com/AlexHowansky/ork-csv/issues",
-                "source": "https://github.com/AlexHowansky/ork-csv/tree/1.4.1"
+                "source": "https://github.com/AlexHowansky/ork-csv/tree/1.5.0"
             },
-            "time": "2021-05-07T20:31:08+00:00"
+            "time": "2021-11-02T20:06:29+00:00"
         },
         {
             "name": "ork/phpcs",
-            "version": "2.5.2",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AlexHowansky/ork-phpcs.git",
-                "reference": "0d554547886a4827f263db3af4fdf523164366ff"
+                "reference": "724ee29da5bdb4a0732ec0dce649ee2db8e61e23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AlexHowansky/ork-phpcs/zipball/0d554547886a4827f263db3af4fdf523164366ff",
-                "reference": "0d554547886a4827f263db3af4fdf523164366ff",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-phpcs/zipball/724ee29da5bdb4a0732ec0dce649ee2db8e61e23",
+                "reference": "724ee29da5bdb4a0732ec0dce649ee2db8e61e23",
                 "shasum": ""
             },
             "require": {
@@ -221,9 +224,9 @@
             ],
             "support": {
                 "issues": "https://github.com/AlexHowansky/ork-phpcs/issues",
-                "source": "https://github.com/AlexHowansky/ork-phpcs/tree/2.5.2"
+                "source": "https://github.com/AlexHowansky/ork-phpcs/tree/2.6.0"
             },
-            "time": "2021-10-11T17:07:12+00:00"
+            "time": "2021-10-20T23:24:56+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",

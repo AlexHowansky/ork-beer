@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Ork BBKF">
+<ruleset name="Ork Beer">
     <rule ref="Ork">
         <exclude name="Squiz.PHP.Heredoc.NotAllowed"/>
         <exclude name="PEAR.WhiteSpace.ScopeIndent.IncorrectExact"/>
