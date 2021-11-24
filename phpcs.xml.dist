@@ -2,9 +2,9 @@
 <ruleset name="Ork Beer">
     <rule ref="Ork">
         <exclude name="Squiz.PHP.Heredoc.NotAllowed"/>
-        <exclude name="PEAR.WhiteSpace.ScopeIndent.IncorrectExact"/>
-        <exclude name="Squiz.ControlStructures.SwitchDeclaration.BreakIndent"/>
-        <exclude name="Squiz.ControlStructures.SwitchDeclaration.SpacingAfterBreak"/>
     </rule>
+    <rule ref="PHPCompatibility"/>
+    <config name="php_version" value="70426"/>
+    <config name="testVersion" value="7.4-"/>
     <file>src</file>
 </ruleset>

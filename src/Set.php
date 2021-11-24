@@ -139,33 +139,39 @@ class Set implements \IteratorAggregate, \Countable
                             continue 3;
                         }
                         break;
+
                     case '!in':
                         if (in_array($row[$filter['field']], $filter['value']) === true) {
                             continue 3;
                         }
                         break;
+
                     case 'match':
                         // @phpcs:ignore Ork.Operators.ComparisonOperatorUsage.NotAllowed
                         if ($row[$filter['field']] != $filter['value']) {
                             continue 3;
                         }
                         break;
+
                     case '!match':
                         // @phpcs:ignore Ork.Operators.ComparisonOperatorUsage.NotAllowed
                         if ($row[$filter['field']] == $filter['value']) {
                             continue 3;
                         }
                         break;
+
                     case 'regex':
                         if (preg_match($filter['value'], $row[$filter['field']]) !== 1) {
                             continue 3;
                         }
                         break;
+
                     case '!regex':
                         if (preg_match($filter['value'], $row[$filter['field']]) === 1) {
                             continue 3;
                         }
                         break;
+
                     default:
                         throw new \RuntimeException('Unknown filter type.');
                 }

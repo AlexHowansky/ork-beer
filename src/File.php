@@ -129,7 +129,7 @@ class File
         if (empty($data) === true) {
             throw new \RuntimeException('JSON decode failed.');
         }
-        if (array_key_exists('ResultData', $data) === false) {
+        if (is_array($data) === false || array_key_exists('ResultData', $data) === false) {
             throw new \RuntimeException('JSON decode produced unexpected data.');
         }
         if (count($data['ResultData']) < self::THRESHOLD) {
