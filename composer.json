@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpstan/phpstan": "^1.2",
+        "phpstan/phpstan": "^1.4",
         "roave/security-advisories": "dev-master"
     },
     "autoload": {
@@ -32,5 +32,10 @@
     "scripts": {
         "phpcs": "phpcs",
         "phpstan": "phpstan"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
