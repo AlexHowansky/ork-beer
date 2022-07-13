@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpstan/phpstan": "^1.4",
+        "phpstan/phpstan": "^1.7",
         "roave/security-advisories": "dev-master"
     },
     "autoload": {
