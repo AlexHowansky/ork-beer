@@ -19,9 +19,6 @@ use Ork\Beer\Set;
 class Info extends AbstractCommand
 {
 
-    /**
-     * @inheritdoc
-     */
     public function __invoke(array $args = []): void
     {
         $set = new Set(array_shift($args));
@@ -33,9 +30,6 @@ class Info extends AbstractCommand
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function help(): string
     {
         return <<<EOS

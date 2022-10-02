@@ -49,9 +49,9 @@ class Set implements Countable, IteratorAggregate
         $data = iterator_to_array($this);
         usort(
             $data,
-            fn($a, $b) => strnatcasecmp(
-                preg_replace('/^The\s+/i', '', $a['Name']),
-                preg_replace('/^The\s+/i', '', $b['Name'])
+            fn(array $a, array $b) => strnatcasecmp(
+                preg_replace('/^The\s+/i', '', $a['Name'] ?? null),
+                preg_replace('/^The\s+/i', '', $b['Name'] ?? null)
             )
         );
         return $data;
@@ -84,10 +84,18 @@ class Set implements Countable, IteratorAggregate
 
     /**
      * Implement IteratorAggregate interface.
+     *
+     * @return Generator<array>
+     *
+     * @throws RuntimeException If the set file is not valid JSON.
      */
     public function getIterator(): Generator
     {
-        yield from json_decode(file_get_contents($this->file), true, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode((string) file_get_contents($this->file), true, 512, JSON_THROW_ON_ERROR);
+        if (is_array($data) !== true) {
+            throw new RuntimeException('Invalid data in set.');
+        }
+        yield from $data;
     }
 
     /**

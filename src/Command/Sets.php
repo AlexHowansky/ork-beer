@@ -19,9 +19,6 @@ use Ork\Beer\File;
 class Sets extends AbstractCommand
 {
 
-    /**
-     * @inheritdoc
-     */
     public function __invoke(array $args = []): void
     {
         $sets = (new File())->getAvailableSets();
@@ -32,9 +29,6 @@ class Sets extends AbstractCommand
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function help(): string
     {
         return 'List the available sets.';

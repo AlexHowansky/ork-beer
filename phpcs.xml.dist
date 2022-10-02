@@ -2,7 +2,6 @@
 <ruleset name="Ork Beer">
     <rule ref="Ork">
         <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClass"/>
-        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
         <exclude name="Squiz.PHP.Heredoc.NotAllowed"/>
     </rule>
     <rule ref="PHPCompatibility"/>

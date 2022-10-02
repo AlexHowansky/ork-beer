@@ -19,9 +19,6 @@ use ReflectionClass;
 abstract class AbstractCommand implements CommandInterface
 {
 
-    /**
-     * @inheritdoc
-     */
     public function name(): string
     {
         return strtolower((new ReflectionClass($this))->getShortName());

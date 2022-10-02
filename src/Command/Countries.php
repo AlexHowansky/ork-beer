@@ -19,17 +19,11 @@ use Ork\Beer\Set;
 class Countries extends AbstractCommand
 {
 
-    /**
-     * @inheritdoc
-     */
     public function __invoke(array $args = []): void
     {
         echo implode("\n", (new Set(array_shift($args)))->getCountries()), "\n";
     }
 
-    /**
-     * @inheritdoc
-     */
     public function help(): string
     {
         return <<<EOS

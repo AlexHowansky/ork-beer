@@ -29,9 +29,6 @@ class Kmz extends Kml
         return new KmzBuilder($file);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function help(): string
     {
         return <<<EOS

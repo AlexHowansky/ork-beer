@@ -19,9 +19,6 @@ use Ork\Beer\File;
 class Update extends AbstractCommand
 {
 
-    /**
-     * @inheritdoc
-     */
     public function __invoke(array $args = []): void
     {
         $file = new File();
@@ -32,9 +29,6 @@ class Update extends AbstractCommand
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function help(): string
     {
         return 'Download the latest data and save it locally.';
