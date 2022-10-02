@@ -9,7 +9,7 @@ made irrelevant by the convenient addition of JSON-producing AJAX targets.
 # What does this do?
 There are two main goals of this project:
 * Pull data from brewersassociation.org for every known brewery in the world,
-  and format it into CSV files that are suitable for general use.
+  and save it to JSON files that are suitable for general use.
 * Create maps of breweries.
 
 # Why does this exist?
@@ -24,7 +24,7 @@ Run `bin/beer` for basic usage. The following commands are available:
 ## update
 Run `beer update` to download a fresh snapshot of the brewery database. This
 is called a `set` and is named according to the current date, in `YYYYMMDD`
-format. Sets are CSV files stored in the `data` directory.
+format. Sets are JSON files stored in the `data` directory.
 
 ## sets
 Run `beer sets` to see a list of sets that you have downloaded.
@@ -59,7 +59,7 @@ based on the 20191001 set.
 
 `beer kml out NY CT VT`
 
-Creates `out.kml` with three layers, one for each state, bsed on the most
+Creates `out.kml` with three layers, one for each state, based on the most
 recent set.
 
 `beer kml Belgium Belgium`
