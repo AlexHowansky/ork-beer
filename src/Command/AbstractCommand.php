@@ -20,9 +20,7 @@ abstract class AbstractCommand implements CommandInterface
 {
 
     /**
-     * Return the short name for this command.
-     *
-     * @return string The short name for this command.
+     * @inheritdoc
      */
     public function name(): string
     {

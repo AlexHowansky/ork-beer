@@ -20,9 +20,7 @@ class Update extends AbstractCommand
 {
 
     /**
-     * Run the command.
-     *
-     * @param array<string> $args The arguments passed to the command, if any.
+     * @inheritdoc
      */
     public function __invoke(array $args = []): void
     {
@@ -35,9 +33,7 @@ class Update extends AbstractCommand
     }
 
     /**
-     * Output the help text for this command.
-     *
-     * @return string The help text for this command.
+     * @inheritdoc
      */
     public function help(): string
     {
