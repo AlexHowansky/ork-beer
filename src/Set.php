@@ -11,10 +11,15 @@
 
 namespace Ork\Beer;
 
+use Countable;
+use Generator;
+use IteratorAggregate;
+use RuntimeException;
+
 /**
  * Methods to manipulate the data in a set.
  */
-class Set implements \IteratorAggregate, \Countable
+class Set implements Countable, IteratorAggregate
 {
 
     /**
@@ -30,13 +35,6 @@ class Set implements \IteratorAggregate, \Countable
     protected string $file;
 
     /**
-     * Filters to apply, if any.
-     *
-     * @var array
-     */
-    protected array $filters = [];
-
-    /**
      * Constructor.
      *
      * @param string $set The set to work with. Leave empty to use the latest.
@@ -47,39 +45,7 @@ class Set implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Add a filter.
-     *
-     * @param string $type   The type of filter.
-     * @param string $field  The field to apply the filter to.
-     * @param mixed  $value  The value to filter with.
-     * @param bool   $invert True to invert the filter.
-     *
-     * @return Set Allow method chaining.
-     */
-    public function addFilter(string $type, string $field, $value, bool $invert = false): self
-    {
-        $this->filters[] = [
-            'type' => $type,
-            'field' => $field,
-            'value' => $value,
-            'invert' => $invert,
-        ];
-        return $this;
-    }
-
-    /**
-     * Clear all previously set filters.
-     *
-     * @return Set Allow method chaining.
-     */
-    public function clearFilters(): self
-    {
-        $this->filters = [];
-        return $this;
-    }
-
-    /**
-     * Implement \Countable.
+     * Implement Countable interface.
      *
      * @return int The number of records in this data set.
      */
@@ -95,89 +61,20 @@ class Set implements \IteratorAggregate, \Countable
      */
     public function getCountries(): array
     {
-        return array_filter($this->clearFilters()->getDistinct('Country'));
+        $countries = [];
+        foreach ($this as $record) {
+            $countries[$record['BillingAddress']['country'] ?? null] = true;
+        }
+        ksort($countries);
+        return array_filter(array_keys($countries));
     }
 
     /**
-     * Get the distinct values for a field in this data set.
-     *
-     * @param string $field The field to get the distinct values for.
-     *
-     * @return array The distinct values.
+     * Implement IteratorAggregate interface.
      */
-    public function getDistinct(string $field): array
+    public function getIterator(): Generator
     {
-        $list = [];
-        foreach ($this as $row) {
-            $list[$row[$field]] = true;
-        }
-        ksort($list);
-        return array_keys($list);
-    }
-
-    /**
-     * Implement \IteratorAggregate
-     *
-     * @return \Generator
-     *
-     * @throws \RuntimeException If the requested filter is unknown.
-     */
-    public function getIterator(): \Generator
-    {
-        $csv = new \Ork\Csv\Reader([
-            'file' => $this->file,
-            'callbacks' => [
-                'BreweryType' => 'strtolower',
-                'StateProvince' => 'strtoupper',
-            ],
-        ]);
-        foreach ($csv as $row) {
-            foreach ($this->filters as $filter) {
-                switch ($filter['type']) {
-                    case 'in':
-                        if (in_array($row[$filter['field']], $filter['value']) === false) {
-                            continue 3;
-                        }
-                        break;
-
-                    case '!in':
-                        if (in_array($row[$filter['field']], $filter['value']) === true) {
-                            continue 3;
-                        }
-                        break;
-
-                    case 'match':
-                        // @phpcs:ignore Ork.Operators.ComparisonOperatorUsage.NotAllowed
-                        if ($row[$filter['field']] != $filter['value']) {
-                            continue 3;
-                        }
-                        break;
-
-                    case '!match':
-                        // @phpcs:ignore Ork.Operators.ComparisonOperatorUsage.NotAllowed
-                        if ($row[$filter['field']] == $filter['value']) {
-                            continue 3;
-                        }
-                        break;
-
-                    case 'regex':
-                        if (preg_match($filter['value'], $row[$filter['field']]) !== 1) {
-                            continue 3;
-                        }
-                        break;
-
-                    case '!regex':
-                        if (preg_match($filter['value'], $row[$filter['field']]) === 1) {
-                            continue 3;
-                        }
-                        break;
-
-                    default:
-                        throw new \RuntimeException('Unknown filter type.');
-                }
-            }
-            yield $row;
-        }
+        yield from json_decode(file_get_contents($this->file), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -187,31 +84,29 @@ class Set implements \IteratorAggregate, \Countable
      */
     public function getName(): string
     {
-        return basename($this->file, '.csv');
+        return basename($this->file, '.json');
     }
 
-    /**
-     * Get the records in this data set sorted by a particular field.
-     *
-     * @param string $field The field to sort by.
-     *
-     * @return array The sorted records.
-     */
-    public function getSorted(string $field): array
-    {
-        $data = iterator_to_array($this);
-        $swapThe = in_array($field, self::SWAP_THE_FIELDS);
-        usort(
-            $data,
-            function ($a, $b) use ($field, $swapThe) {
-                return strnatcasecmp(
-                    $swapThe === true ? preg_replace('/^(The) (.+)$/', '$2, $1', $a[$field]) : $a[$field],
-                    $swapThe === true ? preg_replace('/^(The) (.+)$/', '$2, $1', $b[$field]) : $b[$field],
-                );
-            }
-        );
-        return $data;
-    }
+    // /**
+    //  * Get the records in this data set sorted by a particular field.
+    //  *
+    //  * @param string $field The field to sort by.
+    //  *
+    //  * @return array The sorted records.
+    //  */
+    // public function getSorted(string $field): array
+    // {
+    //     $data = iterator_to_array($this);
+    //     $swapThe = in_array($field, self::SWAP_THE_FIELDS);
+    //     usort(
+    //         $data,
+    //         fn($a, $b) => strnatcasecmp(
+    //             $swapThe === true ? preg_replace('/^(The) (.+)$/', '$2, $1', $a[$field]) : $a[$field],
+    //             $swapThe === true ? preg_replace('/^(The) (.+)$/', '$2, $1', $b[$field]) : $b[$field],
+    //         )
+    //     );
+    //     return $data;
+    // }
 
     /**
      * Get the list of states represented by this data set.
@@ -220,12 +115,14 @@ class Set implements \IteratorAggregate, \Countable
      */
     public function getStates(): array
     {
-        return array_filter(
-            $this
-                ->clearFilters()
-                ->addFilter('regex', 'Country', '/^(United States|)$/')
-                ->getDistinct('StateProvince')
-        );
+        $states = [];
+        foreach ($this as $record) {
+            if (($record['BillingAddress']['countryCode'] ?? null) === 'US') {
+                $states[$record['BillingAddress']['state'] ?? null] = true;
+            }
+        }
+        ksort($states);
+        return array_filter(array_keys($states));
     }
 
 }

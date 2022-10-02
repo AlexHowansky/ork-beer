@@ -11,6 +11,8 @@
 
 namespace Ork\Beer\Command;
 
+use Ork\Beer\Set;
+
 /**
  * Command to print some information about a set.
  */
@@ -18,15 +20,11 @@ class Info extends AbstractCommand
 {
 
     /**
-     * Run the command.
-     *
-     * @param array $args The arguments passed to the command, if any.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function __invoke(array $args = []): void
     {
-        $set = new \Ork\Beer\Set(array_shift($args));
+        $set = new Set(array_shift($args));
         printf(
             "Set %s contains %s breweries from %d countries.\n",
             $set->getName(),
@@ -36,9 +34,7 @@ class Info extends AbstractCommand
     }
 
     /**
-     * Output the help text for this command.
-     *
-     * @return string The help text for this command.
+     * @inheritdoc
      */
     public function help(): string
     {
