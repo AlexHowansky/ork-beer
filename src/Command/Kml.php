@@ -11,11 +11,19 @@
 
 namespace Ork\Beer\Command;
 
+use Exception;
+use Ork\Beer\KmlBuilder;
+use Ork\Beer\Set;
+use Ork\Beer\State;
+use RuntimeException;
+
 /**
  * Command to output KML files.
  */
 class Kml extends AbstractCommand
 {
+
+    protected const SKIP_TYPES = ['Brewery In Planning', 'Office only location'];
 
     /**
      * Run the command.
@@ -24,19 +32,19 @@ class Kml extends AbstractCommand
      *
      * @return void
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function __invoke(array $args = []): void
     {
         $output = array_shift($args);
         if (empty($output) === true) {
-            throw new \RuntimeException('Must specify output file.');
+            throw new RuntimeException('Must specify output file.');
         }
         if (is_writable(dirname($output)) === false) {
-            throw new \RuntimeException('Specified output directory is not writable.');
+            throw new RuntimeException('Specified output directory is not writable.');
         }
 
-        $set = new \Ork\Beer\Set(preg_match('/^\d{8}$/', $args[0] ?? null) === 1 ? array_shift($args) : null);
+        $set = new Set(preg_match('/^\d{8}$/', $args[0] ?? null) === 1 ? array_shift($args) : null);
         printf("Using set: %s\n", $set->getName());
 
         $args = $this->expandArgs($args);
@@ -45,23 +53,34 @@ class Kml extends AbstractCommand
             $store->startLayer($layer);
             printf("Creating layer: %s\n", $layer);
             $markerCount = 0;
-            $breweries = $set
-                ->clearFilters()
-                ->addFilter('!match', 'BreweryType', 'planning')
-                ->addFilter('in', strlen($filters[0]) === 2 ? 'StateProvince' : 'Country', $filters)
-                ->getSorted('InstituteName');
-            foreach ($breweries as $brewery) {
+            foreach ($set->byName() as $record) {
+                if (
+                    in_array($record['Brewery_Type__c'], self::SKIP_TYPES) === true ||
+                    preg_match('/Brewery In Planning/i', $record['Name'])
+                ) {
+                    continue;
+                }
+                if (
+                    in_array(
+                        strlen($filters[0]) === 2
+                            ? ($record['BillingAddress']['stateCode'] ?? null)
+                            : ($record['BillingAddress']['country'] ?? null),
+                        $filters
+                    ) === false
+                ) {
+                    continue;
+                }
                 try {
-                    $store->placemark($brewery);
+                    $store->placemark($record);
                     ++$markerCount;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     printf("    %s\n", $e->getMessage());
                 }
             }
             $store->endLayer();
             printf("    Layer contains %d placemarks\n", $markerCount);
             if ($markerCount > 2000) {
-                throw new \RuntimeException('Exceeded placemark layer limit.');
+                throw new RuntimeException('Exceeded placemark layer limit.');
             }
         }
     }
@@ -73,15 +92,15 @@ class Kml extends AbstractCommand
      *
      * @return array The list of states/countries to process.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     protected function expandArgs(array $args): array
     {
         if (empty($args) === true) {
-            throw new \RuntimeException('Must specify at least one region, state, or country.');
+            throw new RuntimeException('Must specify at least one region, state, or country.');
         }
         $list = [];
-        $state = new \Ork\Beer\State();
+        $state = new State();
         foreach ($args as $arg) {
             if ($state->abbreviationExists($arg) === true) {
                 $list[$state->getName($arg)] = [$arg];
@@ -100,11 +119,11 @@ class Kml extends AbstractCommand
      *
      * @param string $file The output file.
      *
-     * @return \Ork\Beer\Kml
+     * @return KmlBuilder
      */
-    protected function getStorageObject(string $file): \Ork\Beer\Kml
+    protected function getStorageObject(string $file): KmlBuilder
     {
-        return new \Ork\Beer\Kml($file);
+        return new KmlBuilder($file);
     }
 
     /**

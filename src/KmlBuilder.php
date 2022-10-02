@@ -11,16 +11,19 @@
 
 namespace Ork\Beer;
 
+use RuntimeException;
+use XMLWriter;
+
 /**
  * KML generation class.
  */
-class Kml
+class KmlBuilder
 {
 
     /**
      * Use this type if none is explicitly specified.
      */
-    protected const DEFAULT_TYPE = 'other';
+    protected const DEFAULT_TYPE = 'Other';
 
     /**
      * The icon to use for placemarks.
@@ -42,15 +45,16 @@ class Kml
      * The color to use for each type.
      */
     protected const TYPE_COLORS = [
-        'brewpub' => 'F8971B',
-        'contract' => 'F4EB37',
-        'large' => '7C3592',
-        'micro' => '34E5EB',
-        'other' => '000000',
-        'planning' => 'E0E0E0',
-        'proprietor' => '4186F0',
-        'regional' => '009D57',
-        'taproom' => 'D04040',
+        'Alt Prop' => '4186F0',
+        'Brewpub' => 'F8971B',
+        'Contract' => 'F4EB37',
+        'Large' => '7C3592',
+        'Location' => 'E0E0E0',
+        'Micro' => '34E5EB',
+        'NonBeer' => '7cf72f',
+        'Other' => '000000',
+        'Regional' => '009D57',
+        'Taproom' => 'D04040',
     ];
 
     /**
@@ -63,9 +67,9 @@ class Kml
     /**
      * The XMLWriter object we'll build the KML file with.
      *
-     * @var \XMLWriter $kml
+     * @var XMLWriter $kml
      */
-    protected \XMLWriter $kml;
+    protected XMLWriter $kml;
 
     /**
      * Constructor.
@@ -115,9 +119,9 @@ class Kml
     /**
      * End a layer.
      *
-     * @return Kml
+     * @return KmlBuilder
      */
-    public function endLayer(): Kml
+    public function endLayer(): KmlBuilder
     {
         $this->kml->endElement();
         return $this;
@@ -128,9 +132,9 @@ class Kml
      *
      * @param array $data The data to create XML for.
      *
-     * @return Kml
+     * @return KmlBuilder
      */
-    protected function extendedData(array $data): Kml
+    protected function extendedData(array $data): KmlBuilder
     {
         $this->kml->startElement('ExtendedData');
         foreach ($data as $name => $value) {
@@ -150,48 +154,50 @@ class Kml
      *
      * @param array $row The data row to create a placemark for.
      *
-     * @return Kml
+     * @return KmlBuilder
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
-    public function placemark(array $row): Kml
+    public function placemark(array $row): KmlBuilder
     {
         if (
-            empty($row['Longitude']) === true ||
-            empty($row['Latitude']) === true ||
-            ($row['Longitude'] > -0.1 && $row['Longitude'] < 0.1) ||
-            ($row['Latitude'] > -0.1 && $row['Latitude'] < 0.1)
+            empty($row['BillingAddress']['longitude']) === true ||
+            empty($row['BillingAddress']['latitude']) === true ||
+            ($row['BillingAddress']['longitude'] > -0.1 && $row['BillingAddress']['longitude'] < 0.1) ||
+            ($row['BillingAddress']['latitude'] > -0.1 && $row['BillingAddress']['latitude'] < 0.1)
         ) {
-            throw new \RuntimeException('No lat/lon available for brewery: ' . $row['InstituteName']);
+            throw new RuntimeException('No lat/lon available for brewery: ' . $row['Name']);
         }
 
         $this->kml->startElement('Placemark');
-        $this->kml->writeElement('name', $row['InstituteName']);
+        $this->kml->writeElement('name', $row['Name']);
         $this->kml->writeElement(
             'styleUrl',
             sprintf(
                 '#%s',
-                array_key_exists($row['BreweryType'], self::TYPE_COLORS) === true
-                    ? $row['BreweryType']
+                array_key_exists($row['Brewery_Type__c'], self::TYPE_COLORS) === true
+                    ? $row['Brewery_Type__c']
                     : self::DEFAULT_TYPE
             )
         );
         $this->kml->startElement('Point');
-        $this->kml->writeElement('coordinates', sprintf('%s,%s', $row['Longitude'], $row['Latitude']));
+        $this->kml->writeElement(
+            'coordinates',
+            sprintf('%s,%s', $row['BillingAddress']['longitude'], $row['BillingAddress']['latitude'])
+        );
         $this->kml->endElement();
 
         $this->extendedData(
             array_filter([
-                'Type' => $row['BreweryType'],
-                'Website' => $row['WebSite'],
-                'Open To Public' => empty($row['NotOpentoPublic']) === true ? 'Yes' : 'No',
-                'Phone' => $row['WorkPhone'],
-                'Address' => $row['Address1'],
-                'City' => $row['City'],
-                'State' => $row['StateProvince'],
-                'Zip' => $row['Zip'],
-                'Founded' => $row['FoundedDate'] ? date('F jS, Y', strtotime($row['FoundedDate'])) : '',
-                'Parent' => $row['TopParentCoName'] === $row['InstituteName'] ? '' : $row['TopParentCoName'],
+                'Type' => $row['Brewery_Type__c'],
+                'Website' => $row['Website'],
+                'Phone' => $row['Phone'],
+                'Address' => $row['BillingAddress']['street'],
+                'City' => $row['BillingAddress']['city'],
+                'State' => $row['BillingAddress']['stateCode'],
+                'Zip' => $row['BillingAddress']['postalCode'],
+                'Craft' => $row['Is_Craft_Brewery__c'] ? 'yes' : 'no',
+                'Parent' => $row['Parent'][0]['Name'] ?? null,
             ])
         );
 
@@ -205,9 +211,9 @@ class Kml
      *
      * @param string $layer The layer name.
      *
-     * @return Kml
+     * @return KmlBuilder
      */
-    public function startLayer(string $layer): Kml
+    public function startLayer(string $layer): KmlBuilder
     {
         $this->kml->startElement('Folder');
         $this->kml->writeElement('name', $layer);

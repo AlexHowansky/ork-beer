@@ -11,29 +11,32 @@
 
 namespace Ork\Beer;
 
+use RuntimeException;
+use ZipArchive;
+
 /**
  * KMZ generation class.
  */
-class Kmz extends Kml
+class KmzBuilder extends KmlBuilder
 {
 
     /**
      * Finish up.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function __destruct()
     {
         parent::__destruct();
-        $zip = new \ZipArchive();
-        if ($zip->open($this->file . '.kmz', \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException('Unable to create KMZ file.');
+        $zip = new ZipArchive();
+        if ($zip->open($this->file . '.kmz', ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new RuntimeException('Unable to create KMZ file.');
         }
         if ($zip->addFile($this->file . '.kml') === false) {
-            throw new \RuntimeException('Unable to add KML to KMZ file.');
+            throw new RuntimeException('Unable to add KML to KMZ file.');
         }
         if ($zip->close() === false) {
-            throw new \RuntimeException('KMZ close failed.');
+            throw new RuntimeException('KMZ close failed.');
         }
         unlink($this->file . '.kml');
     }

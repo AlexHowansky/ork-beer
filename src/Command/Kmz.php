@@ -11,6 +11,8 @@
 
 namespace Ork\Beer\Command;
 
+use Ork\Beer\KmzBuilder;
+
 /**
  * Command to output KMZ files.
  */
@@ -21,18 +23,14 @@ class Kmz extends Kml
      * Get the storage object for this file.
      *
      * @param string $file The output file.
-     *
-     * @return \Ork\Beer\Kmz
      */
-    protected function getStorageObject(string $file): \Ork\Beer\Kmz
+    protected function getStorageObject(string $file): KmzBuilder
     {
-        return new \Ork\Beer\Kmz($file);
+        return new KmzBuilder($file);
     }
 
     /**
-     * Output the help text for this command.
-     *
-     * @return string The help text for this command.
+     * @inheritdoc
      */
     public function help(): string
     {

@@ -60,8 +60,8 @@ class Command
         return [
             new Countries(),
             new Info(),
-            // new Kml(),
-            // new Kmz(),
+            new Kml(),
+            new Kmz(),
             new Sets(),
             new Update(),
         ];
