@@ -11,6 +11,8 @@
 
 namespace Ork\Beer;
 
+use \RuntimeException;
+
 /**
  * Data file management class.
  */
@@ -36,13 +38,13 @@ class File
      *
      * @return string The verified file name for the given data set.
      *
-     * @throws \RuntimeException If the requested set does not exist.
+     * @throws RuntimeException If the requested set does not exist.
      */
     public function get(string $set = null): string
     {
         $file = $this->getFileNameForSet($set ?? $this->getLatestSet());
         if (file_exists($file) === false) {
-            throw new \RuntimeException('No such data set.');
+            throw new RuntimeException('No such data set.');
         }
         return $file;
     }
@@ -59,9 +61,9 @@ class File
             if (
                 $file->isDot() === false &&
                 $file->isFile() === true &&
-                $file->getExtension() === 'csv'
+                $file->getExtension() === 'json'
             ) {
-                $sets[] = $file->getBaseName('.csv');
+                $sets[] = $file->getBaseName('.json');
             }
         }
         sort($sets);
@@ -73,13 +75,13 @@ class File
      *
      * @return string The data directory.
      *
-     * @throws \RuntimeException If the data directory does not exist.
+     * @throws RuntimeException If the data directory does not exist.
      */
     protected function getDataDirectory(): string
     {
         $dir = realpath(__DIR__ . '/../data');
         if ($dir === false) {
-            throw new \RuntimeException('Data directory does not exist.');
+            throw new RuntimeException('Data directory does not exist.');
         }
         return $dir;
     }
@@ -93,7 +95,7 @@ class File
      */
     protected function getFileNameForSet(string $set): string
     {
-        return sprintf('%s/%s.csv', $this->getDataDirectory(), $set);
+        return sprintf('%s/%s.json', $this->getDataDirectory(), $set);
     }
 
     /**
@@ -101,13 +103,13 @@ class File
      *
      * @return string The most recent data set.
      *
-     * @throws \RuntimeException If there is no local data.
+     * @throws RuntimeException If there is no local data.
      */
     public function getLatestSet(): string
     {
         $sets = $this->getAvailableSets();
         if (empty($sets) === true) {
-            throw new \RuntimeException('No data. Run `beer update` to get new data.');
+            throw new RuntimeException('No data. Run `beer update` to get new data.');
         }
         return array_pop($sets);
     }
@@ -117,25 +119,25 @@ class File
      *
      * @return array The data.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     protected function getSnapshot(): array
     {
         $json = file_get_contents(self::URL);
         if (empty($json) === true) {
-            throw new \RuntimeException('JSON query produced no output.');
+            throw new RuntimeException('JSON query produced no output.');
         }
-        $data = json_decode(json_decode($json, true), true);
+        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         if (empty($data) === true) {
-            throw new \RuntimeException('JSON decode failed.');
+            throw new RuntimeException('JSON decode failed.');
         }
-        if (is_array($data) === false || array_key_exists('ResultData', $data) === false) {
-            throw new \RuntimeException('JSON decode produced unexpected data.');
+        if (is_array($data) === false) {
+            throw new RuntimeException('JSON decode produced unexpected data.');
         }
-        if (count($data['ResultData']) < self::THRESHOLD) {
-            throw new \RuntimeException('Record count suspiciously low, aborting.');
+        if (count($data) < self::THRESHOLD) {
+            throw new RuntimeException('Record count suspiciously low, aborting.');
         }
-        return $data['ResultData'];
+        return $data;
     }
 
     /**
@@ -163,21 +165,19 @@ class File
      *
      * @return int The number of rows pulled.
      *
-     * @throws \RuntimeException If a data file already exists for today.
+     * @throws RuntimeException If a data file already exists for today.
      */
     public function update(): int
     {
         $file = $this->getTodaysFileName();
         if (file_exists($file) === true) {
-            throw new \RuntimeException('Set ' . $this->getTodaysSet() . ' already exists.');
+            throw new RuntimeException('Set ' . $this->getTodaysSet() . ' already exists.');
         }
-        $csv = new \Ork\Csv\Writer(['file' => $file]);
-        $rows = 0;
-        foreach ($this->getSnapshot() as $row) {
-            ++$rows;
-            $csv->write($row);
+        $data = $this->getSnapshot();
+        if (file_put_contents($file, json_encode($data, JSON_THROW_ON_ERROR)) === false) {
+            throw new RuntimeException('Write failed.');
         }
-        return $rows;
+        return count($data);
     }
 
 }

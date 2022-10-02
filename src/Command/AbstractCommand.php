@@ -11,6 +11,8 @@
 
 namespace Ork\Beer\Command;
 
+use ReflectionClass;
+
 /**
  * CLI command abstract.
  */
@@ -18,13 +20,13 @@ abstract class AbstractCommand implements CommandInterface
 {
 
     /**
-     * Get the name for this command.
+     * Return the short name for this command.
      *
-     * @return string The name for this command.
+     * @return string The short name for this command.
      */
-    public function getCommandName(): string
+    public function name(): string
     {
-        return strtolower((new \ReflectionClass($this))->getShortName());
+        return strtolower((new ReflectionClass($this))->getShortName());
     }
 
 }

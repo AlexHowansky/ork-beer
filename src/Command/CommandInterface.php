@@ -20,17 +20,22 @@ interface CommandInterface
     /**
      * Run the command.
      *
-     * @param array $args The arguments passed to the command, if any.
-     *
-     * @return void
+     * @param array<string> $args The arguments passed to the command, if any.
      */
     public function __invoke(array $args = []): void;
 
     /**
-     * Output the help text for this command.
+     * Return the help text for this command.
      *
      * @return string The help text for this command.
      */
     public function help(): string;
+
+    /**
+     * Return the short name for this command.
+     *
+     * @return string The short name for this command.
+     */
+    public function name(): string;
 
 }

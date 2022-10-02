@@ -11,6 +11,8 @@
 
 namespace Ork\Beer\Command;
 
+use Ork\Beer\File;
+
 /**
  * Command to get the latest data.
  */
@@ -20,14 +22,16 @@ class Update extends AbstractCommand
     /**
      * Run the command.
      *
-     * @param array $args The arguments passed to the command, if any.
-     *
-     * @return void
+     * @param array<string> $args The arguments passed to the command, if any.
      */
     public function __invoke(array $args = []): void
     {
-        $file = new \Ork\Beer\File();
-        printf("Downloaded %s breweries to set %s.\n", number_format($file->update()), $file->getLatestSet());
+        $file = new File();
+        printf(
+            "Downloaded %s breweries to set %s.\n",
+            number_format($file->update()),
+            $file->getLatestSet()
+        );
     }
 
     /**
