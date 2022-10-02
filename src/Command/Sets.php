@@ -11,6 +11,8 @@
 
 namespace Ork\Beer\Command;
 
+use Ork\Beer\File;
+
 /**
  * Command to list the available sets.
  */
@@ -18,21 +20,20 @@ class Sets extends AbstractCommand
 {
 
     /**
-     * Run the command.
-     *
-     * @param array $args The arguments passed to the command, if any.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function __invoke(array $args = []): void
     {
-        echo implode("\n", (new \Ork\Beer\File())->getAvailableSets()), "\n";
+        $sets = (new File())->getAvailableSets();
+        if (empty($sets) === true) {
+            echo "No available sets. Run the 'update' command to download a fresh set.\n";
+        } else {
+            echo implode("\n", $sets), "\n";
+        }
     }
 
     /**
-     * Output the help text for this command.
-     *
-     * @return string The help text for this command.
+     * @inheritdoc
      */
     public function help(): string
     {
