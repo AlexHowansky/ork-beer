@@ -43,45 +43,11 @@ class Kml extends AbstractCommand
         if (is_writable(dirname($output)) === false) {
             throw new RuntimeException('Specified output directory is not writable.');
         }
-
         $set = new Set(preg_match('/^\d{8}$/', $args[0] ?? null) === 1 ? array_shift($args) : null);
         printf("Using set: %s\n", $set->getName());
-
-        $args = $this->expandArgs($args);
         $store = $this->getStorageObject($output);
-        foreach ($args as $layer => $filters) {
-            $store->startLayer($layer);
-            printf("Creating layer: %s\n", $layer);
-            $markerCount = 0;
-            foreach ($set->byName() as $record) {
-                if (
-                    in_array($record['Brewery_Type__c'], self::SKIP_TYPES) === true ||
-                    preg_match('/Brewery In Planning/i', $record['Name'])
-                ) {
-                    continue;
-                }
-                if (
-                    in_array(
-                        strlen($filters[0]) === 2
-                            ? ($record['BillingAddress']['stateCode'] ?? null)
-                            : ($record['BillingAddress']['country'] ?? null),
-                        $filters
-                    ) === false
-                ) {
-                    continue;
-                }
-                try {
-                    $store->placemark($record);
-                    ++$markerCount;
-                } catch (Exception $e) {
-                    printf("    %s\n", $e->getMessage());
-                }
-            }
-            $store->endLayer();
-            printf("    Layer contains %d placemarks\n", $markerCount);
-            if ($markerCount > 2000) {
-                throw new RuntimeException('Exceeded placemark layer limit.');
-            }
+        foreach ($this->expandArgs($args) as $layer => $filters) {
+            $this->layer($set, $store, $layer, $filters);
         }
     }
 
@@ -138,6 +104,47 @@ class Kml extends AbstractCommand
             Generate KML files from a set. If no set is specified, the latest
             will be used.
             EOS;
+    }
+
+    /**
+     * Output a KML layer.
+     *
+     * @throws RuntimeException If a layer contains more than 2000 placemarks.
+     */
+    protected function layer(Set $set, KmlBuilder $store, string $layer, array $filters): void
+    {
+        $store->startLayer($layer);
+        printf("Creating layer: %s\n", $layer);
+        $markerCount = 0;
+        foreach ($set->byName() as $record) {
+            if (
+                in_array($record['Brewery_Type__c'], self::SKIP_TYPES) === true ||
+                preg_match('/Brewery In Planning/i', $record['Name']) === 1
+            ) {
+                continue;
+            }
+            if (
+                in_array(
+                    strlen($filters[0]) === 2
+                        ? ($record['BillingAddress']['stateCode'] ?? null)
+                        : ($record['BillingAddress']['country'] ?? null),
+                    $filters
+                ) === false
+            ) {
+                continue;
+            }
+            try {
+                $store->placemark($record);
+                ++$markerCount;
+            } catch (Exception $e) {
+                printf("    %s\n", $e->getMessage());
+            }
+        }
+        $store->endLayer();
+        printf("    Layer contains %d placemarks\n", $markerCount);
+        if ($markerCount > 2000) {
+            throw new RuntimeException('Exceeded placemark layer limit.');
+        }
     }
 
 }

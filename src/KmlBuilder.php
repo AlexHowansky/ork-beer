@@ -196,7 +196,7 @@ class KmlBuilder
                 'City' => $row['BillingAddress']['city'],
                 'State' => $row['BillingAddress']['stateCode'],
                 'Zip' => $row['BillingAddress']['postalCode'],
-                'Craft' => $row['Is_Craft_Brewery__c'] ? 'yes' : 'no',
+                'Craft' => (bool) $row['Is_Craft_Brewery__c'] === true ? 'yes' : 'no',
                 'Parent' => $row['Parent'][0]['Name'] ?? null,
             ])
         );
