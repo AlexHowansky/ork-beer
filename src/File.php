@@ -11,7 +11,8 @@
 
 namespace Ork\Beer;
 
-use \RuntimeException;
+use DirectoryIterator;
+use RuntimeException;
 
 /**
  * Data file management class.
@@ -57,7 +58,7 @@ class File
     public function getAvailableSets(): array
     {
         $sets = [];
-        foreach (new \DirectoryIterator($this->getDataDirectory()) as $file) {
+        foreach (new DirectoryIterator($this->getDataDirectory()) as $file) {
             if (
                 $file->isDot() === false &&
                 $file->isFile() === true &&
