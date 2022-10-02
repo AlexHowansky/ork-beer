@@ -58,7 +58,7 @@ class Command
     protected function getCommands(): array
     {
         return [
-            // new Countries(),
+            new Countries(),
             new Info(),
             // new Kml(),
             // new Kmz(),

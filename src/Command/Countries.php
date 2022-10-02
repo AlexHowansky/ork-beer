@@ -11,6 +11,8 @@
 
 namespace Ork\Beer\Command;
 
+use Ork\Beer\Set;
+
 /**
  * Command to list the countries we have data for.
  */
@@ -18,21 +20,15 @@ class Countries extends AbstractCommand
 {
 
     /**
-     * Run the command.
-     *
-     * @param array $args The arguments passed to the command, if any.
-     *
-     * @return void
+     * @inheritdoc
      */
     public function __invoke(array $args = []): void
     {
-        echo implode("\n", (new \Ork\Beer\Set(array_shift($args)))->getCountries()), "\n";
+        echo implode("\n", (new Set(array_shift($args)))->getCountries()), "\n";
     }
 
     /**
-     * Output the help text for this command.
-     *
-     * @return string The help text for this command.
+     * @inheritdoc
      */
     public function help(): string
     {
