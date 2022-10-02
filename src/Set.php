@@ -23,11 +23,6 @@ class Set implements Countable, IteratorAggregate
 {
 
     /**
-     * Fields that should be converted from "The Foo" to "Foo, The".
-     */
-    protected const SWAP_THE_FIELDS = ['InstituteName', 'TopParentCoName'];
-
-    /**
      * The data file.
      *
      * @var string
@@ -42,6 +37,24 @@ class Set implements Countable, IteratorAggregate
     public function __construct(string $set = null)
     {
         $this->file = (new File())->get($set);
+    }
+
+    /**
+     * Get the records in this data set sorted by name.
+     *
+     * @return array The sorted records.
+     */
+    public function byName(): array
+    {
+        $data = iterator_to_array($this);
+        usort(
+            $data,
+            fn($a, $b) => strnatcasecmp(
+                preg_replace('/^The\s+/i', '', $a['Name']),
+                preg_replace('/^The\s+/i', '', $b['Name'])
+            )
+        );
+        return $data;
     }
 
     /**
@@ -86,27 +99,6 @@ class Set implements Countable, IteratorAggregate
     {
         return basename($this->file, '.json');
     }
-
-    // /**
-    //  * Get the records in this data set sorted by a particular field.
-    //  *
-    //  * @param string $field The field to sort by.
-    //  *
-    //  * @return array The sorted records.
-    //  */
-    // public function getSorted(string $field): array
-    // {
-    //     $data = iterator_to_array($this);
-    //     $swapThe = in_array($field, self::SWAP_THE_FIELDS);
-    //     usort(
-    //         $data,
-    //         fn($a, $b) => strnatcasecmp(
-    //             $swapThe === true ? preg_replace('/^(The) (.+)$/', '$2, $1', $a[$field]) : $a[$field],
-    //             $swapThe === true ? preg_replace('/^(The) (.+)$/', '$2, $1', $b[$field]) : $b[$field],
-    //         )
-    //     );
-    //     return $data;
-    // }
 
     /**
      * Get the list of states represented by this data set.

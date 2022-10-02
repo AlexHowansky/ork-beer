@@ -59,10 +59,10 @@ class Command
     {
         return [
             // new Countries(),
-            // new Info(),
+            new Info(),
             // new Kml(),
             // new Kmz(),
-            // new Sets(),
+            new Sets(),
             new Update(),
         ];
     }
