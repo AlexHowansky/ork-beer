@@ -24,8 +24,6 @@ class Set implements Countable, IteratorAggregate
 
     /**
      * The data file.
-     *
-     * @var string
      */
     protected string $file;
 

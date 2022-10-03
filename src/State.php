@@ -11,6 +11,8 @@
 
 namespace Ork\Beer;
 
+use RuntimeException;
+
 /**
  * State map.
  */
@@ -125,12 +127,12 @@ class State
      *
      * @return string The state name.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function getName(string $abbr): string
     {
         if ($this->abbreviationExists($abbr) === false) {
-            throw new \RuntimeException('No such state: ' . $abbr);
+            throw new RuntimeException('No such state: ' . $abbr);
         }
         return self::NAMES[$abbr];
     }
@@ -152,12 +154,12 @@ class State
      *
      * @return array The states in the region.
      *
-     * @throws \RuntimeException On error.
+     * @throws RuntimeException On error.
      */
     public function getStatesInRegion(string $region): array
     {
         if ($this->regionExists($region) === false) {
-            throw new \RuntimeException('No such region: ' . $region);
+            throw new RuntimeException('No such region: ' . $region);
         }
         return self::REGIONS[$region];
     }

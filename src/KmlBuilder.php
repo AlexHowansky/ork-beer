@@ -59,15 +59,11 @@ class KmlBuilder
 
     /**
      * The output file name.
-     *
-     * @var string $file
      */
     protected string $file;
 
     /**
      * The XMLWriter object we'll build the KML file with.
-     *
-     * @var XMLWriter $kml
      */
     protected XMLWriter $kml;
 
@@ -79,7 +75,7 @@ class KmlBuilder
     public function __construct(string $file)
     {
         $this->file = basename($file, '.kml');
-        $this->kml = new \XMLWriter();
+        $this->kml = new XMLWriter();
         $this->kml->openURI($this->file . '.kml');
         $this->kml->startDocument('1.0', 'UTF-8');
         $this->kml->setIndent(true);
@@ -89,9 +85,6 @@ class KmlBuilder
         $this->kml->startElement('Document');
     }
 
-    /**
-     * Finish up.
-     */
     public function __destruct()
     {
         foreach (self::TYPE_COLORS as $type => $color) {
@@ -101,7 +94,10 @@ class KmlBuilder
             $this->kml->startElement('Icon');
             $this->kml->writeElement(
                 'href',
-                self::ICON_BASE . self::ICON . '&highlight=' . $color . '&scale=' . self::ICON_SCALE
+                self::ICON_BASE . self::ICON . '?' . http_build_query([
+                    'highlight' => $color,
+                    'scale' => self::ICON_SCALE,
+                ])
             );
             $this->kml->endElement();
             $this->kml->endElement();
@@ -119,7 +115,7 @@ class KmlBuilder
     /**
      * End a layer.
      *
-     * @return KmlBuilder
+     * @return KmlBuilder Allow method chaining.
      */
     public function endLayer(): KmlBuilder
     {
@@ -132,7 +128,7 @@ class KmlBuilder
      *
      * @param array $data The data to create XML for.
      *
-     * @return KmlBuilder
+     * @return KmlBuilder Allow method chaining.
      */
     protected function extendedData(array $data): KmlBuilder
     {
@@ -154,17 +150,15 @@ class KmlBuilder
      *
      * @param array $row The data row to create a placemark for.
      *
-     * @return KmlBuilder
+     * @return KmlBuilder Allow method chaining.
      *
-     * @throws RuntimeException On error.
+     * @throws RuntimeException If no lat/lon is available.
      */
     public function placemark(array $row): KmlBuilder
     {
         if (
             empty($row['BillingAddress']['longitude']) === true ||
-            empty($row['BillingAddress']['latitude']) === true ||
-            ($row['BillingAddress']['longitude'] > -0.1 && $row['BillingAddress']['longitude'] < 0.1) ||
-            ($row['BillingAddress']['latitude'] > -0.1 && $row['BillingAddress']['latitude'] < 0.1)
+            empty($row['BillingAddress']['latitude']) === true
         ) {
             throw new RuntimeException('No lat/lon available for brewery: ' . $row['Name']);
         }
@@ -187,19 +181,17 @@ class KmlBuilder
         );
         $this->kml->endElement();
 
-        $this->extendedData(
-            array_filter([
-                'Type' => $row['Brewery_Type__c'],
-                'Website' => $row['Website'],
-                'Phone' => $row['Phone'],
-                'Address' => $row['BillingAddress']['street'],
-                'City' => $row['BillingAddress']['city'],
-                'State' => $row['BillingAddress']['stateCode'],
-                'Zip' => $row['BillingAddress']['postalCode'],
-                'Craft' => (bool) $row['Is_Craft_Brewery__c'] === true ? 'yes' : 'no',
-                'Parent' => $row['Parent'][0]['Name'] ?? null,
-            ])
-        );
+        $this->extendedData([
+            'Type' => $row['Brewery_Type__c'],
+            'Website' => $row['Website'],
+            'Phone' => $row['Phone'],
+            'Address' => $row['BillingAddress']['street'],
+            'City' => $row['BillingAddress']['city'],
+            'State' => $row['BillingAddress']['stateCode'],
+            'Zip' => $row['BillingAddress']['postalCode'],
+            'Craft' => (bool) $row['Is_Craft_Brewery__c'] === true ? 'yes' : 'no',
+            'Parent' => $row['Parent'][0]['Name'] ?? null,
+        ]);
 
         $this->kml->endElement();
 
@@ -211,7 +203,7 @@ class KmlBuilder
      *
      * @param string $layer The layer name.
      *
-     * @return KmlBuilder
+     * @return KmlBuilder Allow method chaining.
      */
     public function startLayer(string $layer): KmlBuilder
     {

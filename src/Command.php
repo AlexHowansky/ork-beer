@@ -26,6 +26,9 @@ use Ork\Beer\Command\Update;
 class Command
 {
 
+    /**
+     * How we were invoked.
+     */
     protected string $self;
 
     /**

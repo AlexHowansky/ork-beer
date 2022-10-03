@@ -83,16 +83,16 @@
         },
         {
             "name": "ork/phpcs",
-            "version": "2.8.0",
+            "version": "2.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AlexHowansky/ork-phpcs.git",
-                "reference": "2aebb485f6ac678ed4d9e8bb6255069832dbdb90"
+                "reference": "1fe39495fe2b675c89f81d080d78f6df0dbe6fb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AlexHowansky/ork-phpcs/zipball/2aebb485f6ac678ed4d9e8bb6255069832dbdb90",
-                "reference": "2aebb485f6ac678ed4d9e8bb6255069832dbdb90",
+                "url": "https://api.github.com/repos/AlexHowansky/ork-phpcs/zipball/1fe39495fe2b675c89f81d080d78f6df0dbe6fb4",
+                "reference": "1fe39495fe2b675c89f81d080d78f6df0dbe6fb4",
                 "shasum": ""
             },
             "require": {
@@ -119,9 +119,9 @@
             ],
             "support": {
                 "issues": "https://github.com/AlexHowansky/ork-phpcs/issues",
-                "source": "https://github.com/AlexHowansky/ork-phpcs/tree/2.8.0"
+                "source": "https://github.com/AlexHowansky/ork-phpcs/tree/2.8.1"
             },
-            "time": "2022-10-02T22:58:35+00:00"
+            "time": "2022-10-02T23:26:52+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
