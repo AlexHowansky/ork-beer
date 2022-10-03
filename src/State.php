@@ -100,8 +100,9 @@ class State
         'West South Central' => ['AR', 'LA', 'OK', 'TX'],
 
         // "West" region.
+        'California' => ['CA'],
         'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NM', 'NV', 'UT', 'WY'],
-        'Pacific' => ['AK', 'CA', 'HI', 'OR', 'WA'],
+        'Pacific' => ['AK', 'HI', 'OR', 'WA'],
 
         // "Midwest" region.
         'East North Central' => ['IL', 'IN', 'OH', 'MI', 'WI'],

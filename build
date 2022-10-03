@@ -7,4 +7,4 @@
 ./bin/beer kmz MidwestEast "East North Central"
 ./bin/beer kmz MidwestWest "West North Central"
 ./bin/beer kmz Mountain Mountain
-./bin/beer kmz Pacific Pacific
+./bin/beer kmz Pacific Pacific California
