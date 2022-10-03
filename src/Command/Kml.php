@@ -12,6 +12,7 @@
 namespace Ork\Beer\Command;
 
 use Exception;
+use Generator;
 use Ork\Beer\KmlBuilder;
 use Ork\Beer\Set;
 use Ork\Beer\State;
@@ -53,14 +54,7 @@ class Kml extends AbstractCommand
         printf("Using set: %s\n", $this->set->getName());
         $this->store = $this->getStorageObject($output);
         foreach ($this->expandArgs($args) as $layer => $filters) {
-            $this->store->startLayer($layer);
-            printf("Creating layer: %s\n", $layer);
-            $count = $this->layer($filters);
-            if ($count > self::LAYER_LIMIT) {
-                throw new RuntimeException('Exceeded placemark layer limit.');
-            }
-            printf("    Layer contains %d placemarks\n", $count);
-            $this->store->endLayer();
+            $this->layer($layer, $filters);
         }
     }
 
@@ -94,6 +88,39 @@ class Kml extends AbstractCommand
     }
 
     /**
+     * Get the filtered set of records.
+     *
+     * @param array $filters The filters to apply.
+     *
+     * @return Generator<array> The filtered set of records.
+     */
+    protected function filtered(array $filters): Generator
+    {
+        foreach ($this->set->byName() as $record) {
+            if (
+                in_array($record['Brewery_Type__c'], self::SKIP_TYPES) === true ||
+                preg_match('/Brewery In Planning/i', $record['Name']) === 1
+            ) {
+                continue;
+            }
+            foreach ($filters as $filter) {
+                if (strlen($filter) === 2) {
+                    if (
+                        ($record['BillingAddress']['countryCode'] ?? null) === 'US' &&
+                        ($record['BillingAddress']['stateCode'] ?? null) === $filter
+                    ) {
+                        yield $record;
+                    }
+                } else {
+                    if (($record['BillingAddress']['country'] ?? null) === $filter) {
+                        yield $record;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Get the storage object for this file.
      *
      * @param string $file The output file.
@@ -122,36 +149,19 @@ class Kml extends AbstractCommand
     /**
      * Output a KML layer.
      *
+     * @param string $layer The layer name to create.
      * @param array $filters The filters to apply to this layer.
      *
      * @return int The number of markers in this layer.
      *
      * @throws RuntimeException If a layer contains more than 2000 placemarks.
      */
-    protected function layer(array $filters): int
+    protected function layer(string $layer, array $filters): int
     {
+        $this->store->startLayer($layer);
+        printf("Creating layer: %s\n", $layer);
         $count = 0;
-        foreach ($this->set->byName() as $record) {
-            if (
-                in_array($record['Brewery_Type__c'], self::SKIP_TYPES) === true ||
-                preg_match('/Brewery In Planning/i', $record['Name']) === 1
-            ) {
-                continue;
-            }
-            foreach ($filters as $filter) {
-                if (strlen($filter) === 2) {
-                    if (
-                        ($record['BillingAddress']['countryCode'] ?? null) !== 'US' ||
-                        ($record['BillingAddress']['stateCode'] ?? null) !== $filter
-                    ) {
-                        continue 2;
-                    }
-                } else {
-                    if (($record['BillingAddress']['country'] ?? null) !== $filter) {
-                        continue 2;
-                    }
-                }
-            }
+        foreach ($this->filtered($filters) as $record) {
             try {
                 $this->store->placemark($record);
                 ++$count;
@@ -159,6 +169,11 @@ class Kml extends AbstractCommand
                 printf("    %s\n", $e->getMessage());
             }
         }
+        if ($count > self::LAYER_LIMIT) {
+            throw new RuntimeException('Exceeded placemark layer limit.');
+        }
+        printf("    Layer contains %d placemarks\n", $count);
+        $this->store->endLayer();
         return $count;
     }
 
