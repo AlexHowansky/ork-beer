@@ -23,7 +23,13 @@ use RuntimeException;
 class Kml extends AbstractCommand
 {
 
+    protected const LAYER_LIMIT = 2000;
+
     protected const SKIP_TYPES = ['Brewery In Planning', 'Office only location'];
+
+    protected Set $set;
+
+    protected KmlBuilder $store;
 
     /**
      * Run the command.
@@ -43,11 +49,18 @@ class Kml extends AbstractCommand
         if (is_writable(dirname($output)) === false) {
             throw new RuntimeException('Specified output directory is not writable.');
         }
-        $set = new Set(preg_match('/^\d{8}$/', $args[0] ?? null) === 1 ? array_shift($args) : null);
-        printf("Using set: %s\n", $set->getName());
-        $store = $this->getStorageObject($output);
+        $this->set = new Set(preg_match('/^\d{8}$/', $args[0] ?? null) === 1 ? array_shift($args) : null);
+        printf("Using set: %s\n", $this->set->getName());
+        $this->store = $this->getStorageObject($output);
         foreach ($this->expandArgs($args) as $layer => $filters) {
-            $this->layer($set, $store, $layer, $filters);
+            $this->store->startLayer($layer);
+            printf("Creating layer: %s\n", $layer);
+            $count = $this->layer($filters);
+            if ($count > self::LAYER_LIMIT) {
+                throw new RuntimeException('Exceeded placemark layer limit.');
+            }
+            printf("    Layer contains %d placemarks\n", $count);
+            $this->store->endLayer();
         }
     }
 
@@ -109,42 +122,44 @@ class Kml extends AbstractCommand
     /**
      * Output a KML layer.
      *
+     * @param array $filters The filters to apply to this layer.
+     *
+     * @return int The number of markers in this layer.
+     *
      * @throws RuntimeException If a layer contains more than 2000 placemarks.
      */
-    protected function layer(Set $set, KmlBuilder $store, string $layer, array $filters): void
+    protected function layer(array $filters): int
     {
-        $store->startLayer($layer);
-        printf("Creating layer: %s\n", $layer);
-        $markerCount = 0;
-        foreach ($set->byName() as $record) {
+        $count = 0;
+        foreach ($this->set->byName() as $record) {
             if (
                 in_array($record['Brewery_Type__c'], self::SKIP_TYPES) === true ||
                 preg_match('/Brewery In Planning/i', $record['Name']) === 1
             ) {
                 continue;
             }
-            if (
-                in_array(
-                    strlen($filters[0]) === 2
-                        ? ($record['BillingAddress']['stateCode'] ?? null)
-                        : ($record['BillingAddress']['country'] ?? null),
-                    $filters
-                ) === false
-            ) {
-                continue;
+            foreach ($filters as $filter) {
+                if (strlen($filter) === 2) {
+                    if (
+                        ($record['BillingAddress']['countryCode'] ?? null) !== 'US' ||
+                        ($record['BillingAddress']['stateCode'] ?? null) !== $filter
+                    ) {
+                        continue 2;
+                    }
+                } else {
+                    if (($record['BillingAddress']['country'] ?? null) !== $filter) {
+                        continue 2;
+                    }
+                }
             }
             try {
-                $store->placemark($record);
-                ++$markerCount;
+                $this->store->placemark($record);
+                ++$count;
             } catch (Exception $e) {
                 printf("    %s\n", $e->getMessage());
             }
         }
-        $store->endLayer();
-        printf("    Layer contains %d placemarks\n", $markerCount);
-        if ($markerCount > 2000) {
-            throw new RuntimeException('Exceeded placemark layer limit.');
-        }
+        return $count;
     }
 
 }
