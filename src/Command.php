@@ -11,7 +11,6 @@
 
 namespace Ork\Beer;
 
-use DirectoryIterator;
 use Ork\Beer\Command\CommandInterface;
 use Ork\Beer\Command\Countries;
 use Ork\Beer\Command\Info;
