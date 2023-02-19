@@ -17,6 +17,7 @@ use Ork\Beer\Command\Info;
 use Ork\Beer\Command\Kml;
 use Ork\Beer\Command\Kmz;
 use Ork\Beer\Command\Sets;
+use Ork\Beer\Command\States;
 use Ork\Beer\Command\Update;
 
 /**
@@ -62,6 +63,7 @@ class Command
             new Kml(),
             new Kmz(),
             new Sets(),
+            new States(),
             new Update(),
         ];
     }
