@@ -14,6 +14,7 @@ namespace Ork\Beer\Command;
 use Exception;
 use Generator;
 use Ork\Beer\KmlBuilder;
+use Ork\Beer\Region;
 use Ork\Beer\Set;
 use Ork\Beer\State;
 use RuntimeException;
@@ -24,8 +25,10 @@ use RuntimeException;
 class Kml extends AbstractCommand
 {
 
-    protected const LAYER_LIMIT = 2000;
+    // Google maps does not allow more than this many placemarks on a single map, regardless of layers.
+    protected const PLACEMARK_LIMIT = 2000;
 
+    // Don't include placemarks for these brewery types.
     protected const SKIP_TYPES = ['Brewery In Planning', 'Office only location'];
 
     protected Set $set;
@@ -53,8 +56,13 @@ class Kml extends AbstractCommand
         $this->set = new Set(preg_match('/^\d{8}$/', $args[0] ?? null) === 1 ? array_shift($args) : null);
         printf("Using set: %s\n", $this->set->getName());
         $this->store = $this->getStorageObject($output);
+        $count = 0;
         foreach ($this->expandArgs($args) as $layer => $filters) {
-            $this->layer($layer, $filters);
+            $count += $this->layer($layer, $filters);
+        }
+        printf("KML contains %d placemarks\n", $count);
+        if ($count > self::PLACEMARK_LIMIT) {
+            printf("WARNING Exceeded placemark limit of %s\n", self::PLACEMARK_LIMIT);
         }
     }
 
@@ -74,11 +82,14 @@ class Kml extends AbstractCommand
         }
         $list = [];
         $state = new State();
+        $region = new Region();
         foreach ($args as $arg) {
             if ($state->abbreviationExists($arg) === true) {
-                $list[$state->getName($arg)] = [$arg];
-            } elseif ($state->regionExists($arg) === true) {
-                $list[$arg] = $state->getStatesInRegion($arg);
+                $list[$state->getNameForAbbreviation($arg)] = [strtoupper($arg)];
+            } elseif ($state->nameExists($arg) === true) {
+                $list[ucwords(strtolower($arg))] = [$state->getAbbreviationForName($arg)];
+            } elseif ($region->nameExists($arg) === true) {
+                $list = array_merge($list, $region->getLayersInRegion($arg));
             } else {
                 $list[$arg] = [$arg];
             }
@@ -166,11 +177,8 @@ class Kml extends AbstractCommand
                 $this->store->placemark($record);
                 ++$count;
             } catch (Exception $e) {
-                printf("    %s\n", $e->getMessage());
+                printf("    WARNING %s\n", $e->getMessage());
             }
-        }
-        if ($count > self::LAYER_LIMIT) {
-            throw new RuntimeException('Exceeded placemark layer limit.');
         }
         printf("    Layer contains %d placemarks\n", $count);
         $this->store->endLayer();

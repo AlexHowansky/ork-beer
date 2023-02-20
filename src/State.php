@@ -14,15 +14,15 @@ namespace Ork\Beer;
 use RuntimeException;
 
 /**
- * State map.
+ * State utility methods.
  */
 class State
 {
 
     /**
-     * The list of state names.
+     * The state name / abbreviation map.
      */
-    protected const NAMES = [
+    protected const STATES = [
         'AL' => 'Alabama',
         'AK' => 'Alaska',
         'AZ' => 'Arizona',
@@ -85,31 +85,6 @@ class State
     ];
 
     /**
-     * The states composing each region.
-     *
-     * These regions are defined by the US Census Bureau.
-     */
-    protected const REGIONS = [
-        // "Northeast" region.
-        'Mid Atlantic' => ['NJ', 'NY', 'PA'],
-        'New England' => ['CT', 'MA', 'ME', 'NH', 'RI', 'VT'],
-
-        // "South" region.
-        'East South Central' => ['AL', 'KY', 'MS', 'TN'],
-        'South Atlantic' => ['DC', 'DE', 'FL', 'GA', 'NC', 'SC', 'VA', 'WV'],
-        'West South Central' => ['AR', 'LA', 'OK', 'TX'],
-
-        // "West" region.
-        'California' => ['CA'],
-        'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NM', 'NV', 'UT', 'WY'],
-        'Pacific' => ['AK', 'HI', 'OR', 'WA'],
-
-        // "Midwest" region.
-        'East North Central' => ['IL', 'IN', 'OH', 'MI', 'WI'],
-        'West North Central' => ['IA', 'KS', 'MN', 'MO', 'ND', 'NE', 'SD'],
-    ];
-
-    /**
      * Does an abbreviation exist?
      *
      * @param string $abbr The abbreviation to check.
@@ -118,7 +93,22 @@ class State
      */
     public function abbreviationExists(string $abbr): bool
     {
-        return array_key_exists($abbr, self::NAMES);
+        return array_key_exists(strtoupper($abbr), self::STATES);
+    }
+
+    /**
+     * Get the abbreviation of a state.
+     *
+     * @param string $name The state name.
+     *
+     * @return string The state abbreviation.
+     *
+     * @throws RuntimeException On error.
+     */
+    public function getAbbreviationForName(string $name): string
+    {
+        return array_flip(self::STATES)[ucwords(strtolower($name))]
+            ?? throw new RuntimeException('No such state: ' . $name);
     }
 
     /**
@@ -130,51 +120,22 @@ class State
      *
      * @throws RuntimeException On error.
      */
-    public function getName(string $abbr): string
+    public function getNameForAbbreviation(string $abbr): string
     {
-        if ($this->abbreviationExists($abbr) === false) {
-            throw new RuntimeException('No such state: ' . $abbr);
-        }
-        return self::NAMES[$abbr];
+        return self::STATES[strtoupper($abbr)]
+            ?? throw new RuntimeException('No such state: ' . $abbr);
     }
 
     /**
-     * Get the list of state abbreviations.
+     * Does a name exist?
      *
-     * @return array The list of state abbreviations.
+     * @param string $name The name to check.
+     *
+     * @return bool True if the name exists.
      */
-    public function getStateAbbreviations(): array
+    public function nameExists(string $name): bool
     {
-        return array_keys(self::NAMES);
-    }
-
-    /**
-     * Get the states in a region.
-     *
-     * @param string $region The region.
-     *
-     * @return array The states in the region.
-     *
-     * @throws RuntimeException On error.
-     */
-    public function getStatesInRegion(string $region): array
-    {
-        if ($this->regionExists($region) === false) {
-            throw new RuntimeException('No such region: ' . $region);
-        }
-        return self::REGIONS[$region];
-    }
-
-    /**
-     * Does a region exist?
-     *
-     * @param string $region The region to check.
-     *
-     * @return bool True if the region exists.
-     */
-    public function regionExists(string $region): bool
-    {
-        return array_key_exists($region, self::REGIONS);
+        return array_search(ucwords(strtolower($name)), self::STATES) !== false;
     }
 
 }

@@ -26,6 +26,9 @@ Run `beer update` to download a fresh snapshot of the brewery database. This
 is called a `set` and is named according to the current date, in `YYYYMMDD`
 format. Sets are JSON files stored in the `data` directory.
 
+## build
+Run `beer build` to generate KMZ files for the predefined regions.
+
 ## sets
 Run `beer sets` to see a list of sets that you have downloaded.
 
@@ -38,12 +41,21 @@ be used.
 Run `beer countries <set>` to see a unique list of countries in a set. If you
 do not provide a value for `<set>`, the most recent set will be used.
 
+## states
+Run `beer states <set>` to see a unique list of states in a set. If you do not
+provide a value for `<set>`, the most recent set will be used.
+
+## regions
+Run `beer regions` to see a list of the preferred regional maps and layers.
+These are rougly based on US Census Bureau regions but are adjusted slightly so
+that each region contains about 1000 breweries.
+
 ## kml
 Run `beer kml <output file> [<set>] [<region|state|country> [<region|state|country>...]]`
 to generate a KML file. If you do not provide a value for `<set>`, the most
-recent set will be used. You must specify at least one state (by its
-abbreviation), region (by its label as defined in `src/State.php`), or country
-(by its name as shown in the `beer countries` command.) If you provide
+recent set will be used. You must specify at least one state (by name or
+abbreviation), region (by its name as shown in the `beer regions` command), or
+country (by its name as shown in the `beer countries` command.) If you provide
 multiple values, they will be output into the same file as separate layers. For
 example:
 
@@ -78,16 +90,18 @@ may simply use my existing maps, which are kept reasonably up-to-date and are
 shared here:
 
 * Northeast: http://bit.ly/beer-northeast
-* South Atlantic: http://bit.ly/beer-south-atlantic
-* South Central: http://bit.ly/beer-south-central
+* Mid-Atlantic: https://bit.ly/beer-midatlantic
+* Southeast: http://bit.ly/beer-southeast
+* South: http://bit.ly/beer-south
 * Midwest East: http://bit.ly/beer-midwest-east
 * Midwest West: http://bit.ly/beer-midwest-west
 * Mountain: http://bit.ly/beer-mountain
-* Pacific: http://bit.ly/beer-pacific
+* West: http://bit.ly/beer-west
+* California: http://bit.ly/beer-california
 * Canada: http://bit.ly/beer-canada
 
 Note that since Google Maps has a limit of 2000 points per, the data has been
-split into groups according to the US Census Bureau regions.
+split into groups roughly according to the US Census Bureau regions.
 
 # Disclaimer
 

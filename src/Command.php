@@ -11,11 +11,13 @@
 
 namespace Ork\Beer;
 
+use Ork\Beer\Command\Build;
 use Ork\Beer\Command\CommandInterface;
 use Ork\Beer\Command\Countries;
 use Ork\Beer\Command\Info;
 use Ork\Beer\Command\Kml;
 use Ork\Beer\Command\Kmz;
+use Ork\Beer\Command\Regions;
 use Ork\Beer\Command\Sets;
 use Ork\Beer\Command\States;
 use Ork\Beer\Command\Update;
@@ -58,10 +60,12 @@ class Command
     protected function getCommands(): array
     {
         return [
+            new Build(),
             new Countries(),
             new Info(),
             new Kml(),
             new Kmz(),
+            new Regions(),
             new Sets(),
             new States(),
             new Update(),
