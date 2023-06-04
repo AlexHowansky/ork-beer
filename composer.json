@@ -12,16 +12,16 @@
         }
     ],
     "require": {
-        "php": "^8",
-        "ork/phpcs": "^2.8.1"
+        "php": "^8"
     },
     "suggest": {
         "ext-zip": "Needed to create KMZ files."
     },
     "require-dev": {
-        "phpcompatibility/php-compatibility": "^9.3",
-        "phpstan/phpstan": "^1.9",
-        "rector/rector": "^0.15",
+        "ork/phpcs": "^2.8.1",
+        "phpcompatibility/php-compatibility": "^9.3.5",
+        "phpstan/phpstan": "^1.10.15",
+        "rector/rector": "^0.15.25",
         "roave/security-advisories": "dev-master"
     },
     "autoload": {
