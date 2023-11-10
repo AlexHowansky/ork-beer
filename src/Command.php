@@ -14,6 +14,7 @@ namespace Ork\Beer;
 use Ork\Beer\Command\Build;
 use Ork\Beer\Command\CommandInterface;
 use Ork\Beer\Command\Countries;
+use Ork\Beer\Command\Csv;
 use Ork\Beer\Command\Info;
 use Ork\Beer\Command\Kml;
 use Ork\Beer\Command\Kmz;
@@ -62,6 +63,7 @@ class Command
         return [
             new Build(),
             new Countries(),
+            new Csv(),
             new Info(),
             new Kml(),
             new Kmz(),

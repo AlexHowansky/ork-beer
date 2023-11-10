@@ -110,7 +110,8 @@ class Kml extends AbstractCommand
         foreach ($this->set->byName() as $record) {
             if (
                 in_array($record['Brewery_Type__c'], self::SKIP_TYPES) === true ||
-                preg_match('/Brewery In Planning/i', $record['Name']) === 1
+                preg_match('/Brewery In Planning/i', $record['Name']) === 1 ||
+                preg_match('/ Household$/', $record['Name']) === 1
             ) {
                 continue;
             }
