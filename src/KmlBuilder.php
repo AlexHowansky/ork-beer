@@ -148,49 +148,43 @@ class KmlBuilder
     /**
      * Create a placemark section.
      *
-     * @param array $row The data row to create a placemark for.
+     * @param array $record The data row to create a placemark for.
      *
      * @return KmlBuilder Allow method chaining.
      *
      * @throws RuntimeException If no lat/lon is available.
      */
-    public function placemark(array $row): KmlBuilder
+    public function placemark(array $record): KmlBuilder
     {
-        if (
-            empty($row['BillingAddress']['longitude']) === true ||
-            empty($row['BillingAddress']['latitude']) === true
-        ) {
-            throw new RuntimeException('No lat/lon available for brewery: ' . $row['Name']);
-        }
 
         $this->kml->startElement('Placemark');
-        $this->kml->writeElement('name', $row['Name']);
+        $this->kml->writeElement('name', $record['Name']);
         $this->kml->writeElement(
             'styleUrl',
             sprintf(
                 '#%s',
-                array_key_exists($row['Brewery_Type__c'], self::TYPE_COLORS) === true
-                    ? $row['Brewery_Type__c']
+                array_key_exists($record['Brewery_Type__c'], self::TYPE_COLORS) === true
+                    ? $record['Brewery_Type__c']
                     : self::DEFAULT_TYPE
             )
         );
         $this->kml->startElement('Point');
         $this->kml->writeElement(
             'coordinates',
-            sprintf('%s,%s', $row['BillingAddress']['longitude'], $row['BillingAddress']['latitude'])
+            sprintf('%s,%s', $record['BillingAddress']['longitude'], $record['BillingAddress']['latitude'])
         );
         $this->kml->endElement();
 
         $this->extendedData([
-            'Type' => $row['Brewery_Type__c'],
-            'Website' => $row['Website'],
-            'Phone' => $row['Phone'],
-            'Address' => $row['BillingAddress']['street'],
-            'City' => $row['BillingAddress']['city'],
-            'State' => $row['BillingAddress']['stateCode'],
-            'Zip' => $row['BillingAddress']['postalCode'],
-            'Craft' => (bool) $row['Is_Craft_Brewery__c'] === true ? 'yes' : 'no',
-            'Parent' => $row['Parent'][0]['Name'] ?? null,
+            'Type' => $record['Brewery_Type__c'],
+            'Website' => $record['Website'],
+            'Phone' => $record['Phone'],
+            'Address' => $record['BillingAddress']['street'],
+            'City' => $record['BillingAddress']['city'],
+            'State' => $record['BillingAddress']['stateCode'],
+            'Zip' => $record['BillingAddress']['postalCode'],
+            'Craft' => (bool) $record['Is_Craft_Brewery__c'] === true ? 'yes' : 'no',
+            'Parent' => $record['Parent'][0]['Name'] ?? null,
         ]);
 
         $this->kml->endElement();

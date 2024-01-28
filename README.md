@@ -79,6 +79,11 @@ recent set.
 Creates `Belgium.kml` with one layer containing all the breweries in Belgium,
 based on the most recent set.
 
+Some records pulled from brewersassociation.org do not have LAT/LON coordinates.
+To fill in the gaps where possible, provide an environment variable named
+`GCP_API_KEY` which contains a Google Cloud Platform API key that has geocoding
+rights.
+
 ## kmz
 Use `kmz` as above to create a KMZ file instead of a KML file. This requires
 PHP's `ext-zip` extension.

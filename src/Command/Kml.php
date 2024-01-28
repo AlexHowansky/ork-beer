@@ -13,6 +13,10 @@ namespace Ork\Beer\Command;
 
 use Exception;
 use Generator;
+use Geocoder\Provider\GoogleMaps\GoogleMaps;
+use Geocoder\Query\GeocodeQuery;
+use Geocoder\StatefulGeocoder;
+use GuzzleHttp\Client;
 use Ork\Beer\KmlBuilder;
 use Ork\Beer\Region;
 use Ork\Beer\Set;
@@ -29,11 +33,21 @@ class Kml extends AbstractCommand
     protected const PLACEMARK_LIMIT = 2000;
 
     // Don't include placemarks for these brewery types.
-    protected const SKIP_TYPES = ['Brewery In Planning', 'Office only location'];
+    protected const SKIP_TYPES = ['Brewery In Planning', 'NonBeer', 'Office only location'];
+
+    protected StatefulGeocoder $geocoder;
 
     protected Set $set;
 
     protected KmlBuilder $store;
+
+    public function __construct()
+    {
+        $key = $_ENV['GCP_API_KEY'] ?? $_SERVER['GCP_API_KEY'];
+        if (empty($key) === false) {
+            $this->geocoder = new StatefulGeocoder(new GoogleMaps(new Client(), null, $key), 'en');
+        }
+    }
 
     /**
      * Run the command.
@@ -132,6 +146,47 @@ class Kml extends AbstractCommand
         }
     }
 
+    protected function geocode(array $record): array
+    {
+        if (
+            empty($record['BillingAddress']['latitude']) === false &&
+            empty($record['BillingAddress']['longitude']) === false
+        ) {
+            return $record;
+        }
+
+        if (empty($record['BillingAddress']['street']) === true) {
+            throw new RuntimeException('No lat/lon or address available for brewery: ' . $record['Name']);
+        }
+
+        if (isset($this->geocoder) === false) {
+            throw new RuntimeException('No geocoder available for brewery: ' . $record['Name']);
+        }
+
+        $address = sprintf(
+            '%s, %s, %s %s',
+            $record['BillingAddress']['street'],
+            $record['BillingAddress']['city'],
+            $record['BillingAddress']['stateCode'],
+            $record['BillingAddress']['postalCode']
+        );
+        $result = $this->geocoder->geocodeQuery(GeocodeQuery::create($address));
+        if (count($result) === 0) {
+            printf("    WARNING Failed geocoding brewery: %s\n", $record['Name']);
+        } else {
+            $record['BillingAddress']['latitude'] = $result->first()->getCoordinates()?->getLatitude();
+            $record['BillingAddress']['longitude'] = $result->first()->getCoordinates()?->getLongitude();
+            printf(
+                "    NOTICE Succeeded geocoding brewery: %s [%s, %s]\n",
+                $record['Name'],
+                $record['BillingAddress']['latitude'],
+                $record['BillingAddress']['longitude']
+            );
+        }
+
+        return $record;
+    }
+
     /**
      * Get the storage object for this file.
      *
@@ -175,7 +230,7 @@ class Kml extends AbstractCommand
         $count = 0;
         foreach ($this->filtered($filters) as $record) {
             try {
-                $this->store->placemark($record);
+                $this->store->placemark($this->geocode($record));
                 ++$count;
             } catch (Exception $e) {
                 printf("    WARNING %s\n", $e->getMessage());

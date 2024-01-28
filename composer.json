@@ -13,7 +13,9 @@
     ],
     "require": {
         "php": "^8",
-        "ork/csv": "^2"
+        "ork/csv": "^2",
+        "geocoder-php/google-maps-provider": "^4.7.1",
+        "guzzlehttp/guzzle": "^7.8.1"
     },
     "suggest": {
         "ext-zip": "Needed to create KMZ files."
@@ -22,7 +24,7 @@
         "ork/phpcs": "^2.8.2",
         "phpcompatibility/php-compatibility": "^9.3.5",
         "phpstan/phpstan": "^1.10.57",
-        "rector/rector": "^0.15.25",
+        "rector/rector": ">=0.19.2",
         "roave/security-advisories": "dev-master"
     },
     "autoload": {
@@ -37,7 +39,8 @@
     },
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "php-http/discovery": true
         }
     }
 }
