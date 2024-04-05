@@ -43,7 +43,7 @@ class Kml extends AbstractCommand
 
     public function __construct()
     {
-        $key = $_ENV['GCP_API_KEY'] ?? $_SERVER['GCP_API_KEY'];
+        $key = $_ENV['GCP_API_KEY'] ?? $_SERVER['GCP_API_KEY'] ?? null;
         if (empty($key) === false) {
             $this->geocoder = new StatefulGeocoder(new GoogleMaps(new Client(), null, $key), 'en');
         }
