@@ -6,7 +6,7 @@
         <exclude name="Squiz.PHP.Heredoc.NotAllowed"/>
     </rule>
     <rule ref="PHPCompatibility"/>
-    <config name="php_version" value="80024"/>
-    <config name="testVersion" value="8.0-"/>
+    <config name="php_version" value="80228"/>
+    <config name="testVersion" value="8.2-"/>
     <file>src</file>
 </ruleset>

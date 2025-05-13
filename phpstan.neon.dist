@@ -4,6 +4,6 @@ parameters:
             identifier: missingType.generics
         -
             identifier: missingType.iterableValue
-    level: max
+    level: 6
     paths:
         - src
