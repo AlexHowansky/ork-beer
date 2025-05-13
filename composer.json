@@ -13,17 +13,17 @@
     ],
     "require": {
         "php": "^8.2",
-        "ork/csv": "^2.1.0",
-        "geocoder-php/google-maps-provider": "^4.7.1",
-        "guzzlehttp/guzzle": "^7.9.2"
+        "ork/csv": "^2.2.0",
+        "geocoder-php/google-maps-provider": "^4.8.0",
+        "guzzlehttp/guzzle": "^7.9.3"
     },
     "suggest": {
         "ext-zip": "Needed to create KMZ files."
     },
     "require-dev": {
-        "ork/phpcs": "^2.8.4",
+        "ork/phpcs": "^2.10.0",
         "phpcompatibility/php-compatibility": "^9.3.5",
-        "phpstan/phpstan": "^1.12.13",
+        "phpstan/phpstan": "^1.12.25",
         "rector/rector": "^1.2.10",
         "roave/security-advisories": "dev-master"
     },

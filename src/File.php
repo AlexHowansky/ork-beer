@@ -35,13 +35,13 @@ class File
      * Get the verified file name for a given data set. If no set name is
      * provided, get the latest one.
      *
-     * @param string $set The data set to get the file name for.
+     * @param ?string $set The data set to get the file name for.
      *
      * @return string The verified file name for the given data set.
      *
      * @throws RuntimeException If the requested set does not exist.
      */
-    public function get(string $set = null): string
+    public function get(?string $set = null): string
     {
         $file = $this->getFileNameForSet($set ?? $this->getLatestSet());
         if (file_exists($file) === false) {

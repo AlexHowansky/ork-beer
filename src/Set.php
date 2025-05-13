@@ -30,9 +30,9 @@ class Set implements Countable, IteratorAggregate
     /**
      * Constructor.
      *
-     * @param string $set The set to work with. Leave empty to use the latest.
+     * @param ?string $set The set to work with. Leave empty to use the latest.
      */
-    public function __construct(string $set = null)
+    public function __construct(?string $set = null)
     {
         $this->file = (new File())->get($set);
     }
